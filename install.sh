@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Install tmux if not present
-sudo apt install tmux
+sudo apt install tmux -y
 
 # Install pqcli latest version from GitHub
 cd /tmp/
