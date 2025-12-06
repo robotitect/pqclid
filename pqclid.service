@@ -3,18 +3,16 @@ Description=Progress Quest CLI (curses) in tmux
 After=network.target
 
 [Service]
-# This is CRITICAL — gives tmux a full environment
 Environment=TERM=tmux-256color
 Environment=HOME=$HOME
 
-# Always start a fresh session
 ExecStart=/usr/bin/tmux new-session -s pqcli -d '$HOME/.local/bin/pqcli --load-save 1'
 
-# If pqcli crashes, restart tmux (which restarts pqcli)
+# If pqcli crashes, restart tmux (restarting pqcli)
 Restart=always
 RestartSec=2
 
-# Prevent systemd from killing tmux’s pty
+# Prevent systemd from killing tmux
 KillMode=process
 
 StandardOutput=journal
