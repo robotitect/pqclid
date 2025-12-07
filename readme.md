@@ -16,7 +16,7 @@ Progress Quest CLI install and configuration to run as a daemon.
 
 ### Web interface notes
 * This command "screenshots" the session 
-	* `tmux capture-pane -t pqcli -p -S -`
+	* `tmux capture-pane -t pqcli -pJ`
 	* Can be piped to a file or `cat`
 * Use the above to serve a webpage (sinatra) that just shows this
 	* Refreshes every second
