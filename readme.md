@@ -8,6 +8,7 @@ Progress Quest CLI install and configuration to run as a daemon.
 - [ ] Install script support on other distros
 	- [ ] Fedora
 	- [ ] Arch
+- [ ] Use `pipx` to install pqcli (from github repo)
 - [ ] Support for creating a character in install script
 - [ ] Install script installs its own version of Python and tmux and uses those
 - [ ] Create command for attaching to the instance
