@@ -1,0 +1,29 @@
+┌──────── Character Sheet ─────────┐┌───────────────── Equipment ──────────────────┐┌──────── Plot Development ────────┐
+│Name           Yabuki Nako        ││Weapon         +1 Halberd                     ││[X] Prologue                      │
+│Race           Will o' the Wisp   ││Shield         +1 Baroque Shield              ││[X] Act I                         │
+│Class          Tickle-Mimic       ││Helm           +2 Ringmail                    ││[X] Act II                        │
+│Level          12                 ││Hauberk        Rusty Splint Mail              ││[ ] Act III                       │
+│                                  ││Brassairts     +2 Ringmail                    ││                                  │
+│STR            23                 ││Vambraces      -2 Chainmail                   ││                                  │
+│CON            21                 ││Gauntlets      +2 Ringmail                    ││                                  │
+│DEX            13                 ││Gambeson       Scale Mail                     ││                                  │
+│INT            14                 ││Cuisses        Scale Mail                     ││                                  │
+│WIS            21                 ││Greaves        Scale Mail                     ││                                  │
+│CHA            26                 ││Sollerets      +2 Ringmail                    ││                                  │
+│HP Max         89                 ││                                              │├──────────────────────────────────┤
+│MP Max         76                 ││                                              ││         48.47% (~10.5h)          │
+├────Experience (4562 XP to go)────┤└──────────────────────────────────────────────┘└──────────────────────────────────┘
+│          68.32% (~1.6h)          │┌───────────────── Inventory ──────────────────┐┌───────────── Quests ─────────────┐
+└──────────────────────────────────┘│ettin fur                                   1 ││[X] Exterminate the Oxygen Golems │
+┌─────────── Spell Book ───────────┐│Garlanded Laurel of the Bone                1 ││[X] Exterminate the Couatls       │
+│Revolting Cloud               III ││remorhaz protrusion                         1 ││[X] Fetch me a letter             │
+│Invisible Hands               III ││red dragon cocktail                         1 ││[X] Seek the Lucky Fleece         │
+│Good Move                       V ││pentasaurus head                            1 ││[X] Deliver this rock             │
+│Cone of Paste                   I ││vrock neck                                  1 ││[X] Deliver this dirtclod         │
+│History Lesson                  I ││gorgosaurus arm                             1 ││[X] Fetch me a lunchpail          │
+│Animate Nightstand              I ││cloud giant condensation                    1 ││[ ] Placate the Liches            │
+│Hydrophobia                   III │├──────────Encumbrance (14/33 cubits)──────────┤├──────────────────────────────────┤
+│Nonplus                         I ││                    42.42%                    ││           62.61% (~6m)           │
+└──────────────────────────────────┘└──────────────────────────────────────────────┘└──────────────────────────────────┘
+Executing a Fire Giant...
+                                                         39.17%
