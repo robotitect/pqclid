@@ -2,17 +2,26 @@
 
 if [ "$os" = "Linux"]; then
     # Install tmux if not present
-    packagesNeeded=(tmux)
-    if [ -x "$(command -v apk)" ]; then
-        sudo apk add --no-cache "${packagesNeeded[@]}"
-    elif [ -x "$(command -v apt-get)" ]; then
-        sudo apt-get install "${packagesNeeded[@]}"
-    elif [ -x "$(command -v dnf)" ]; then
-        sudo dnf install "${packagesNeeded[@]}"
-    elif [ -x "$(command -v zypper)" ]; then
-        sudo zypper install "${packagesNeeded[@]}"
-    else
-        echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: "${packagesNeeded[@]}"">&2;
+    if command -v tmux > /dev/null 2>&1; then
+        echo "tmux installed"
+    else  
+        packagesNeeded=(tmux)
+        if [ -x "$(command -v apk)" ]; then
+            sudo apk add --no-cache "${packagesNeeded[@]}"
+        elif [ -x "$(command -v apt-get)" ]; then
+            sudo apt-get install "${packagesNeeded[@]}"
+        elif [ -x "$(command -v dnf)" ]; then
+            sudo dnf install "${packagesNeeded[@]}"
+        elif [ -x "$(command -v zypper)" ]; then
+            sudo zypper install "${packagesNeeded[@]}"
+        elif [ -x "$(command -v pacman)" ]; then
+            sudo pacman -S tmux
+        elif [ -x "$(command -v yum)" ]; then
+            sudo yum install tmux
+        else
+            echo "FAILED TO INSTALL PACKAGE: Package manager not found."
+            echo "You must manually install: "${packagesNeeded[@]}""
+        fi
     fi
 
     # Install pqcli latest version from GitHub
