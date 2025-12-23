@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'awesome_print'
+require 'roman-numerals'
 
 HEADER_CHAR_SHEET = 'Character Sheet'
 HEADER_EQUIPMENT = 'Equipment'
@@ -9,13 +12,16 @@ HEADER_QUESTS = 'Quests'
 
 CHAR_SHEET_INT_ATTRS =
   ['Level', 'STR', 'CON', 'DEX', 'INT', 'WIS', 'CHA', 'HP Max', 'MP Max', 'XP',
-   'XP Remaining']
+   'XP Remaining'].freeze
+CHAR_SHEET_FLOAT_ATTRS = ['XP (%)', 'Time Left (h)'].freeze
 
-CHAR_SHEET_FLOAT_ATTRS = ['XP (%)', 'Time Left (h)']
-
+TITLE_MATCHER = /([ \w]+)/
+NUM_MATCHER = /(\d*\.?\d+)/
 
 Coordinates = Struct.new(:row, :col)
-Box = Struct.new(:top_left, :top_right, :bot_left, :bot_right)
+Task = Struct.new(:text, :completed)
+
+Data = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests)
 
 capture = File.readlines(ARGV[0])
 
@@ -27,7 +33,7 @@ capture.each_with_index do |line, row|
   end
 
   indices_top_left.each do |col|
-    top_left_corners << Coordinates.new(row, col)
+    top_left_corners << Coordinates.new(row: row, col: col)
   end
 end
 
@@ -62,6 +68,10 @@ top_left_corners.each do |coords|
   textboxes << textbox
 end
 
+def validate_textbox_header(textbox, header)
+  textbox.first[TITLE_MATCHER].strip == header
+end
+
 def filter_textbox(textbox)
   # Skip first and last lines (just ----------------)
   textbox[1..-2].map { |line| line[1..-2].split('  ') } # Split along long lengths of spaces
@@ -70,90 +80,151 @@ def filter_textbox(textbox)
 end
 
 def parse_generic(textbox)
-  filter_textbox(textbox).reject { _1.size != 2 }.to_h
+  filter_textbox(textbox).select { _1.size == 2 }.to_h
+end
+
+def parse_percent_time_left(line)
+  line_split = line.strip.split(' ')
+  percent = line_split.first[NUM_MATCHER]
+  time_left = line_split.last[NUM_MATCHER]
+  time_unit = line_split.last[/([a-zA-Z]+)/]
+  [percent, time_left, time_unit]
+end
+
+def parse_experience_textbox(textbox)
+  tb_xp = filter_textbox(textbox).select { _1.size == 1 }.flatten
+  xp_remaining = tb_xp.first[/(\d+)/]
+
+  xp_percent, xp_time_left, xp_time_unit = parse_percent_time_left(tb_xp.last)
+  [xp_remaining, xp_percent, xp_time_left, xp_time_unit]
+end
+
+def calc_xp(xp_remaining, xp_percent)
+  xp_total_to_next_lvl =
+    (xp_remaining.to_f / ((100.0 - xp_percent.to_f) / 100.0)).round.to_i
+  xp_current = xp_total_to_next_lvl - xp_remaining.to_f.round.to_i
+  [xp_current, xp_total_to_next_lvl]
+end
+
+def parse_experience(textbox)
+  xp_data = {}
+
+  xp_remaining, xp_percent, xp_time_left, xp_time_unit = parse_experience_textbox(textbox)
+
+  xp_data['XP'], xp_data['XP Needed'] = calc_xp(xp_remaining, xp_percent)
+  xp_data['XP Remaining'] = xp_remaining
+  xp_data['XP (%)'] = xp_percent
+  xp_data['Time Left (h)'] = xp_time_left
+  xp_data['Time Unit'] = xp_time_unit
+  xp_data
+end
+
+# For to-do list style boxes (Plot Development, Quests)
+def parse_todo_list(textbox)
+  filtered_tb = filter_textbox(textbox).select { _1.size == 1 }.flatten
+  filtered_tb.reject! { _1.include?('───────') }
+
+  tasks = []
+
+  # For all but the last, get the tasks and the progress ([x] or [ ])
+  filtered_tb[...-1].each do |line|
+    completed = line[1] == 'X'
+    text = line[3..].strip
+    tasks << Task.new(text: text, completed: completed)
+  end
+
+  percent_completed, time_left, time_unit =
+    parse_percent_time_left(filtered_tb.last)
+
+  [tasks, percent_completed, time_left, time_unit]
 end
 
 def parse_character_sheet(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_CHAR_SHEET
+  return unless validate_textbox_header(textbox, HEADER_CHAR_SHEET)
 
-  char_data = parse_generic(textbox)
-
-  # TODO: handle Experience
-  tb_xp = filter_textbox(textbox).reject { _1.size != 1 }.flatten
-  ap tb_xp
-  xp_remaining = tb_xp.first[/([\d]+)/].to_f
-  xp_percent = tb_xp.last[/([\d]+).([\d]+)/].to_f
-  regexp_time_left = /\d+.\d+.+(\d+.\d+)/
-  xp_time_left = regexp_time_left.match(tb_xp.last).captures.first
-  ap xp_time_left
-
-  xp_total =
-    (xp_remaining.to_f / ((100.0 - xp_percent.to_f) / 100.0)).round.to_i
-
-  char_data["XP"] = xp_total.to_i - xp_remaining.round.to_i
-  char_data["XP Remaining"] = xp_remaining
-  char_data["XP (%)"] = xp_percent
-  char_data["Time Left (h)"] = xp_time_left
+  char_data = parse_generic(textbox).merge(parse_experience(textbox))
 
   char_data.each do |attr, val|
-    if CHAR_SHEET_INT_ATTRS.include?(attr)
-      char_data[attr] = val.to_i
-    end
-
-    if CHAR_SHEET_FLOAT_ATTRS.include?(attr)
-      char_data[attr] = val.to_f
-    end
+    char_data[attr] = val.to_i if CHAR_SHEET_INT_ATTRS.include?(attr)
+    char_data[attr] = val.to_f if CHAR_SHEET_FLOAT_ATTRS.include?(attr)
   end
-
-  # puts "XP remaining: #{xp_remaining}"
-  # puts "XP total: #{xp_total}"
-  # puts "XP%: #{xp_percent}"
 
   char_data
 end
 
 def parse_equipment(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_EQUIPMENT
+  return unless validate_textbox_header(textbox, HEADER_EQUIPMENT)
 
   parse_generic(textbox)
 end
 
 def parse_plot_development(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_PLOT_DEV
+  return unless validate_textbox_header(textbox, HEADER_PLOT_DEV)
+
+  acts, percent_completed, time_left, time_unit = parse_todo_list(textbox)
+
+  {
+    "Acts" => acts,
+    "Completed %" => percent_completed.to_f,
+    "Time Left" => time_left.to_f,
+    "Time Unit" => time_unit,
+  }
 end
 
 def parse_spell_book(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_SPELL_BOOK
+  return unless validate_textbox_header(textbox, HEADER_SPELL_BOOK)
 
-  parse_generic(textbox)
+  spell_data = parse_generic(textbox)
+  spell_data.transform_values! { RomanNumerals.to_decimal(_1) }
 end
 
 def parse_inventory(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_INVENTORY
+  return unless validate_textbox_header(textbox, HEADER_INVENTORY)
+
+  textbox_data = parse_generic(textbox)
+  percent_encumbrance, _, _ = parse_percent_time_left(textbox.last)
+  ap percent_encumbrance
+
+  textbox_data
 end
 
 def parse_quests(textbox)
-  return unless textbox.first[/([ \w]+)/].strip == HEADER_QUESTS
+  return unless validate_textbox_header(textbox, HEADER_QUESTS)
+
+  quests, percent_completed, time_left, time_unit = parse_todo_list(textbox)
+
+  {
+    "Quests" => quests,
+    "Completed %" => percent_completed.to_f,
+    "Time Left" => time_left.to_f,
+    "Time Unit" => time_unit,
+  }
 end
 
-textboxes[0..0].each_with_index do |textbox, i|
-  title = textbox.first[/([ \w]+)/].strip
-  puts "\nBox #{i}: #{title}"
-  textbox_data =
+data = Data.new
+
+textboxes[0..5].each_with_index do |textbox, i|
+  title = textbox.first[TITLE_MATCHER].strip
+
+  textbox_data, symbol =
     case title
     when HEADER_CHAR_SHEET
-      parse_character_sheet(textbox)
+      [parse_character_sheet(textbox), :character]
     when HEADER_EQUIPMENT
-      parse_equipment(textbox)
+      [parse_equipment(textbox), :equipment]
     when HEADER_PLOT_DEV
-      parse_plot_development(textbox)
+      [parse_plot_development(textbox), :plot]
     when HEADER_SPELL_BOOK
-      parse_spell_book(textbox)
+      [parse_spell_book(textbox), :spells]
     when HEADER_INVENTORY
-      parse_inventory(textbox)
+      [parse_inventory(textbox), :inventory]
     when HEADER_QUESTS
-      parse_quests(textbox)
+      [parse_quests(textbox), :quests]
     end
 
-  ap textbox_data
+  data[symbol] = textbox_data
+
+  # ap textbox_data
 end
+
+ap data
