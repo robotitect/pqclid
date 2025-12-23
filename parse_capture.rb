@@ -21,7 +21,9 @@ NUM_MATCHER = /(\d*\.?\d+)/
 Coordinates = Struct.new(:row, :col)
 Task = Struct.new(:text, :completed)
 
-Data = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests)
+Data = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests,
+                  :current_task)
+CurrentTask = Struct.new(:text, :percent_completed)
 
 capture = File.readlines(ARGV[0])
 
@@ -64,7 +66,6 @@ top_left_corners.each do |coords|
     textbox << capture[r][first_col..last_col]
   end
 
-  # puts textbox
   textboxes << textbox
 end
 
@@ -119,10 +120,15 @@ def parse_experience(textbox)
   xp_data
 end
 
+def filter_todo_list(textbox)
+  filter_textbox(textbox).select { _1.size == 1 }
+                         .flatten
+                         .reject { _1.include?('───────') }
+end
+
 # For to-do list style boxes (Plot Development, Quests)
 def parse_todo_list(textbox)
-  filtered_tb = filter_textbox(textbox).select { _1.size == 1 }.flatten
-  filtered_tb.reject! { _1.include?('───────') }
+  filtered_tb = filter_todo_list(textbox)
 
   tasks = []
 
@@ -164,10 +170,10 @@ def parse_plot_development(textbox)
   acts, percent_completed, time_left, time_unit = parse_todo_list(textbox)
 
   {
-    "Acts" => acts,
-    "Completed %" => percent_completed.to_f,
-    "Time Left" => time_left.to_f,
-    "Time Unit" => time_unit,
+    'Acts' => acts,
+    'Completed %' => percent_completed.to_f,
+    'Time Left' => time_left.to_f,
+    'Time Unit' => time_unit
   }
 end
 
@@ -178,12 +184,25 @@ def parse_spell_book(textbox)
   spell_data.transform_values! { RomanNumerals.to_decimal(_1) }
 end
 
+def filter_inventory(textbox)
+  filter_textbox(textbox).select { _1.size == 1 }.flatten
+end
+
 def parse_inventory(textbox)
   return unless validate_textbox_header(textbox, HEADER_INVENTORY)
 
-  textbox_data = parse_generic(textbox)
-  percent_encumbrance, _, _ = parse_percent_time_left(textbox.last)
-  ap percent_encumbrance
+  textbox_data = {}
+
+  textbox_data["Items"] = parse_generic(textbox).transform_values(&:to_i)
+
+  filtered_tb = filter_inventory(textbox)
+
+  textbox_data['Encumbrance (%)'] =
+    parse_percent_time_left(filtered_tb.last).first.to_f
+
+  textbox_data['Inventory Spaces Filled'],
+    textbox_data['Inventory Spaces Max'] =
+    %r{(\d+)?/(\d+)}.match(filtered_tb.first).captures.map(&:to_i)
 
   textbox_data
 end
@@ -194,16 +213,16 @@ def parse_quests(textbox)
   quests, percent_completed, time_left, time_unit = parse_todo_list(textbox)
 
   {
-    "Quests" => quests,
-    "Completed %" => percent_completed.to_f,
-    "Time Left" => time_left.to_f,
-    "Time Unit" => time_unit,
+    'Quests' => quests,
+    'Completed %' => percent_completed.to_f,
+    'Time Left' => time_left.to_f,
+    'Time Unit' => time_unit
   }
 end
 
 data = Data.new
 
-textboxes[0..5].each_with_index do |textbox, i|
+textboxes[0..5].each_with_index do |textbox, _i|
   title = textbox.first[TITLE_MATCHER].strip
 
   textbox_data, symbol =
@@ -223,8 +242,16 @@ textboxes[0..5].each_with_index do |textbox, i|
     end
 
   data[symbol] = textbox_data
-
-  # ap textbox_data
 end
+
+# Parse last 2 lines of screen i.e. current task and percentage
+current_task_lines = capture[-2..]
+current_task_text = current_task_lines.first.strip
+current_task_percent_completed, =
+  parse_percent_time_left(current_task_lines.last)
+data[:current_task] = CurrentTask.new(
+  text: current_task_text,
+  percent_completed: current_task_percent_completed.to_f
+)
 
 ap data
