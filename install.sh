@@ -4,7 +4,7 @@ if [ "$os" = "Linux"]; then
     # Install tmux if not present
     if command -v tmux > /dev/null 2>&1; then
         echo "tmux installed"
-    else  
+    else
         packagesNeeded=(tmux)
         if [ -x "$(command -v apk)" ]; then
             sudo apk add --no-cache "${packagesNeeded[@]}"
