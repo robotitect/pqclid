@@ -14,6 +14,7 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     regexp_parser (2.11.3)
+    roman-numerals (0.3.0)
     rubocop (1.82.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -39,6 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print (~> 1.9, >= 1.9.2)
+  roman-numerals (~> 0.3.0)
   rubocop
 
 BUNDLED WITH
