@@ -10,10 +10,9 @@ HEADER_SPELL_BOOK = 'Spell Book'
 HEADER_INVENTORY = 'Inventory'
 HEADER_QUESTS = 'Quests'
 
-CHAR_SHEET_INT_ATTRS =
-  ['Level', 'STR', 'CON', 'DEX', 'INT', 'WIS', 'CHA', 'HP Max', 'MP Max', 'XP',
-   'XP Remaining'].freeze
-CHAR_SHEET_FLOAT_ATTRS = ['XP (%)', 'Time Left (h)'].freeze
+CHAR_SHEET_INT_ATTRS = ['Level', 'STR', 'CON', 'DEX', 'INT', 'WIS', 'CHA',
+                        'HP Max', 'MP Max', 'XP', 'XP Remaining'].freeze
+CHAR_SHEET_RATIONAL_ATTRS = ['XP (%)', 'Time Left (h)'].freeze
 
 TITLE_MATCHER = /([ \w]+)/
 NUM_MATCHER = /(\d*\.?\d+)/
@@ -21,8 +20,8 @@ NUM_MATCHER = /(\d*\.?\d+)/
 Coordinates = Struct.new(:row, :col)
 Task = Struct.new(:text, :completed)
 
-Data = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests,
-                  :current_task)
+PqData = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests,
+                    :current_task)
 CurrentTask = Struct.new(:text, :percent_completed)
 
 capture = File.readlines(ARGV[0])
@@ -61,11 +60,9 @@ top_left_corners.each do |coords|
   end
 
   # Extract each line based on corners
-  textbox = (first_row..last_row).map do |r|
+  textboxes << (first_row..last_row).map do |r|
     capture[r][first_col..last_col]
   end
-
-  textboxes << textbox
 end
 
 def validate_textbox_header?(textbox, header)
@@ -74,9 +71,12 @@ end
 
 def filter_textbox(textbox)
   # Skip first and last lines (just ----------------)
-  textbox[1..-2].map { |line| line[1..-2].split('  ') } # Split along long lengths of spaces
-                .map { |line| line.map(&:strip).reject { it == '' } } # Remove empty strings
-                .compact # Remove nils
+  # 1st line: Split along long lengths of spaces
+  # 2nd line: Remove empty strings
+  # 3rd line: Remove nils
+  textbox[1..-2].map { |line| line[1..-2].split('  ') }
+                .map { |line| line.map(&:strip).reject { it == '' } }
+                .compact
 end
 
 def parse_generic(textbox)
@@ -84,16 +84,16 @@ def parse_generic(textbox)
 end
 
 def parse_percent_time_left(line)
-  line_split = line.strip.split
-  percent = line_split.first[NUM_MATCHER]
-  time_left = line_split.last[NUM_MATCHER]
-  time_unit = line_split.last[/([a-zA-Z]+)/]
+  split_line = line.strip.split
+  percent = split_line.first[NUM_MATCHER].to_r
+  time_left = split_line.last[NUM_MATCHER].to_r
+  time_unit = split_line.last[/([a-zA-Z]+)/]
   [percent, time_left, time_unit]
 end
 
 def parse_experience_textbox(textbox)
   tb_xp = filter_textbox(textbox).select { it.size == 1 }.flatten
-  xp_remaining = tb_xp.first[/(\d+)/]
+  xp_remaining = tb_xp.first[/(\d+)/].to_i
 
   xp_percent, xp_time_left, xp_time_unit = parse_percent_time_left(tb_xp.last)
   [xp_remaining, xp_percent, xp_time_left, xp_time_unit]
@@ -101,15 +101,16 @@ end
 
 def calc_xp(xp_remaining, xp_percent)
   xp_total_to_next_lvl =
-    (xp_remaining.to_f / ((100.0 - xp_percent.to_f) / 100.0)).round.to_i
-  xp_current = xp_total_to_next_lvl - xp_remaining.to_f.round.to_i
+    (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
+  xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i
   [xp_current, xp_total_to_next_lvl]
 end
 
 def parse_experience(textbox)
   xp_data = {}
 
-  xp_remaining, xp_percent, xp_time_left, xp_time_unit = parse_experience_textbox(textbox)
+  xp_remaining, xp_percent, xp_time_left, xp_time_unit =
+    parse_experience_textbox(textbox)
 
   xp_data['XP'], xp_data['XP Needed'] = calc_xp(xp_remaining, xp_percent)
   xp_data['XP Remaining'] = xp_remaining
@@ -129,13 +130,12 @@ end
 def parse_todo_list(textbox)
   filtered_tb = filter_todo_list(textbox)
 
-  tasks = []
-
-  # For all but the last, get the tasks and the progress ([x] or [ ])
-  filtered_tb[...-1].each do |line|
-    completed = line[1] == 'X'
-    text = line[3..].strip
-    tasks << Task.new(text: text, completed: completed)
+  # For all lines but the last, get the tasks and the progress ([x] or [ ])
+  tasks = filtered_tb[...-1].map do |line|
+    Task.new(
+      text: line[1] == 'X',
+      completed: line[3..].strip
+    )
   end
 
   percent_completed, time_left, time_unit =
@@ -151,7 +151,7 @@ def parse_character_sheet(textbox)
 
   char_data.each do |attr, val|
     char_data[attr] = val.to_i if CHAR_SHEET_INT_ATTRS.include?(attr)
-    char_data[attr] = val.to_f if CHAR_SHEET_FLOAT_ATTRS.include?(attr)
+    char_data[attr] = val.to_r if CHAR_SHEET_RATIONAL_ATTRS.include?(attr)
   end
 
   char_data
@@ -170,8 +170,8 @@ def parse_plot_development(textbox)
 
   {
     'Acts' => acts,
-    'Completed %' => percent_completed.to_f,
-    'Time Left' => time_left.to_f,
+    'Completed %' => percent_completed,
+    'Time Left' => time_left,
     'Time Unit' => time_unit
   }
 end
@@ -194,7 +194,7 @@ def parse_inventory(textbox)
 
   textbox_data = {
     'Items' => parse_generic(textbox).transform_values(&:to_i),
-    'Encumbrance (%)' => parse_percent_time_left(filtered_tb.last).first.to_f
+    'Encumbrance (%)' => parse_percent_time_left(filtered_tb.last).first
   }
 
   textbox_data['Inventory Spaces Filled'],
@@ -211,13 +211,13 @@ def parse_quests(textbox)
 
   {
     'Quests' => quests,
-    'Completed %' => percent_completed.to_f,
-    'Time Left' => time_left.to_f,
+    'Completed %' => percent_completed,
+    'Time Left' => time_left,
     'Time Unit' => time_unit
   }
 end
 
-data = Data.new
+data = PqData.new
 
 textboxes[0..5].each_with_index do |textbox, _i|
   title = textbox.first[TITLE_MATCHER].strip
@@ -248,7 +248,9 @@ current_task_percent_completed, =
   parse_percent_time_left(current_task_lines.last)
 data[:current_task] = CurrentTask.new(
   text: current_task_text,
-  percent_completed: current_task_percent_completed.to_f
+  percent_completed: current_task_percent_completed
 )
 
 ap data
+
+p data[:current_task]
