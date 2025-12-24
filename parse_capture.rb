@@ -48,12 +48,12 @@ top_left_corners.each do |coords|
 
   # Go right until get top right corner
   last_col =
-    first_col + capture[first_row].split('').drop(first_col).find_index('┐')
+    first_col + capture[first_row].chars.drop(first_col).find_index('┐')
 
   # Go down until get bot left corner
   last_row = first_row
   (first_row...capture.size).each do |row|
-    char = capture[row].split('')[first_col]
+    char = capture[row].chars[first_col]
     if char == '└'
       last_row = row
       break
@@ -61,31 +61,30 @@ top_left_corners.each do |coords|
   end
 
   # Extract each line based on corners
-  textbox = []
-  (first_row..last_row).each do |r|
-    textbox << capture[r][first_col..last_col]
+  textbox = (first_row..last_row).map do |r|
+    capture[r][first_col..last_col]
   end
 
   textboxes << textbox
 end
 
-def validate_textbox_header(textbox, header)
+def validate_textbox_header?(textbox, header)
   textbox.first[TITLE_MATCHER].strip == header
 end
 
 def filter_textbox(textbox)
   # Skip first and last lines (just ----------------)
   textbox[1..-2].map { |line| line[1..-2].split('  ') } # Split along long lengths of spaces
-                .map { |line| line.map(&:strip).reject { _1 == '' } } # Remove empty strings
+                .map { |line| line.map(&:strip).reject { it == '' } } # Remove empty strings
                 .compact # Remove nils
 end
 
 def parse_generic(textbox)
-  filter_textbox(textbox).select { _1.size == 2 }.to_h
+  filter_textbox(textbox).select { it.size == 2 }.to_h
 end
 
 def parse_percent_time_left(line)
-  line_split = line.strip.split(' ')
+  line_split = line.strip.split
   percent = line_split.first[NUM_MATCHER]
   time_left = line_split.last[NUM_MATCHER]
   time_unit = line_split.last[/([a-zA-Z]+)/]
@@ -93,7 +92,7 @@ def parse_percent_time_left(line)
 end
 
 def parse_experience_textbox(textbox)
-  tb_xp = filter_textbox(textbox).select { _1.size == 1 }.flatten
+  tb_xp = filter_textbox(textbox).select { it.size == 1 }.flatten
   xp_remaining = tb_xp.first[/(\d+)/]
 
   xp_percent, xp_time_left, xp_time_unit = parse_percent_time_left(tb_xp.last)
@@ -121,9 +120,9 @@ def parse_experience(textbox)
 end
 
 def filter_todo_list(textbox)
-  filter_textbox(textbox).select { _1.size == 1 }
+  filter_textbox(textbox).select { it.size == 1 }
                          .flatten
-                         .reject { _1.include?('───────') }
+                         .reject { it.include?('───────') }
 end
 
 # For to-do list style boxes (Plot Development, Quests)
@@ -146,7 +145,7 @@ def parse_todo_list(textbox)
 end
 
 def parse_character_sheet(textbox)
-  return unless validate_textbox_header(textbox, HEADER_CHAR_SHEET)
+  return unless validate_textbox_header?(textbox, HEADER_CHAR_SHEET)
 
   char_data = parse_generic(textbox).merge(parse_experience(textbox))
 
@@ -159,13 +158,13 @@ def parse_character_sheet(textbox)
 end
 
 def parse_equipment(textbox)
-  return unless validate_textbox_header(textbox, HEADER_EQUIPMENT)
+  return unless validate_textbox_header?(textbox, HEADER_EQUIPMENT)
 
   parse_generic(textbox)
 end
 
 def parse_plot_development(textbox)
-  return unless validate_textbox_header(textbox, HEADER_PLOT_DEV)
+  return unless validate_textbox_header?(textbox, HEADER_PLOT_DEV)
 
   acts, percent_completed, time_left, time_unit = parse_todo_list(textbox)
 
@@ -178,27 +177,25 @@ def parse_plot_development(textbox)
 end
 
 def parse_spell_book(textbox)
-  return unless validate_textbox_header(textbox, HEADER_SPELL_BOOK)
+  return unless validate_textbox_header?(textbox, HEADER_SPELL_BOOK)
 
   spell_data = parse_generic(textbox)
-  spell_data.transform_values! { RomanNumerals.to_decimal(_1) }
+  spell_data.transform_values! { RomanNumerals.to_decimal(it) }
 end
 
 def filter_inventory(textbox)
-  filter_textbox(textbox).select { _1.size == 1 }.flatten
+  filter_textbox(textbox).select { it.size == 1 }.flatten
 end
 
 def parse_inventory(textbox)
-  return unless validate_textbox_header(textbox, HEADER_INVENTORY)
-
-  textbox_data = {}
-
-  textbox_data["Items"] = parse_generic(textbox).transform_values(&:to_i)
+  return unless validate_textbox_header?(textbox, HEADER_INVENTORY)
 
   filtered_tb = filter_inventory(textbox)
 
-  textbox_data['Encumbrance (%)'] =
-    parse_percent_time_left(filtered_tb.last).first.to_f
+  textbox_data = {
+    'Items' => parse_generic(textbox).transform_values(&:to_i),
+    'Encumbrance (%)' => parse_percent_time_left(filtered_tb.last).first.to_f
+  }
 
   textbox_data['Inventory Spaces Filled'],
     textbox_data['Inventory Spaces Max'] =
@@ -208,7 +205,7 @@ def parse_inventory(textbox)
 end
 
 def parse_quests(textbox)
-  return unless validate_textbox_header(textbox, HEADER_QUESTS)
+  return unless validate_textbox_header?(textbox, HEADER_QUESTS)
 
   quests, percent_completed, time_left, time_unit = parse_todo_list(textbox)
 
