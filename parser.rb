@@ -3,6 +3,7 @@
 require 'awesome_print'
 require 'roman-numerals'
 
+# Parser for PQCLI "screenshots"
 class Parser
   HEADER_CHAR_SHEET = 'Character Sheet'
   HEADER_EQUIPMENT = 'Equipment'
@@ -40,36 +41,10 @@ class Parser
   PqData = Struct.new(:character, :equipment, :plot, :spells, :inventory, :quests,
                       :current_task)
 
-  # capture = File.readlines(ARGV[0])
-
-  def initialize(file)
-    @capture = File.readlines(file)
-  end
+  attr_reader :data
 
   def process
-    data = PqData.new
-
-    textboxes(top_left_corners()).each do |textbox|
-      title = textbox.first[TITLE_MATCHER].strip
-
-      textbox_data, symbol =
-        case title
-        when HEADER_CHAR_SHEET
-          [parse_character_sheet(textbox), :character]
-        when HEADER_EQUIPMENT
-          [parse_equipment(textbox), :equipment]
-        when HEADER_PLOT_DEV
-          [parse_plot_development(textbox), :plot]
-        when HEADER_SPELL_BOOK
-          [parse_spell_book(textbox), :spells]
-        when HEADER_INVENTORY
-          [parse_inventory(textbox), :inventory]
-        when HEADER_QUESTS
-          [parse_quests(textbox), :quests]
-        end
-
-      data[symbol] = textbox_data
-    end
+    data = process_capture
 
     # Parse last 2 lines of screen i.e. current task and percentage
     current_task_lines = @capture[-2..]
@@ -79,9 +54,43 @@ class Parser
       percent_completed: parse_percent_time_left(current_task_lines.last).first
     )
 
-    ap data
+    @data = data
+  end
 
-    return data
+  private
+
+  def initialize(file)
+    @capture = File.readlines(file)
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  def textbox_data_symbol(textbox)
+    case textbox.first[TITLE_MATCHER].strip # Title/header of textbox
+    when HEADER_CHAR_SHEET
+      [parse_character_sheet(textbox), :character]
+    when HEADER_EQUIPMENT
+      [parse_equipment(textbox), :equipment]
+    when HEADER_PLOT_DEV
+      [parse_plot_development(textbox), :plot]
+    when HEADER_SPELL_BOOK
+      [parse_spell_book(textbox), :spells]
+    when HEADER_INVENTORY
+      [parse_inventory(textbox), :inventory]
+    when HEADER_QUESTS
+      [parse_quests(textbox), :quests]
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def process_capture
+    data = PqData.new
+
+    textboxes(top_left_corners).each do |textbox|
+      textbox_data, symbol = textbox_data_symbol(textbox)
+      data[symbol] = textbox_data
+    end
+
+    data
   end
 
   def top_left_corners
@@ -101,34 +110,22 @@ class Parser
   end
 
   def textboxes(top_left_corners)
-    # Get text for all boxes
-    textboxes = []
+    top_left_corners.map { |coords| one_textbox(coords.row, coords.col) }
+  end
 
-    top_left_corners.each do |coords|
-      first_row = coords.row
-      first_col = coords.col
+  # Get text for one textbox
+  def one_textbox(first_row, first_col)
+    # Last column of the textbox in the capture
+    last_col =
+      first_col + @capture[first_row].chars.drop(first_col).find_index('┐')
 
-      # Go right until get top right corner
-      last_col =
-        first_col + @capture[first_row].chars.drop(first_col).find_index('┐')
+    first_col_chars =
+      @capture[first_row..(@capture.size - 3)].map(&:chars).transpose[first_col]
 
-      # Go down until get bot left corner
-      last_row = first_row
-      (first_row...@capture.size).each do |row|
-        char = @capture[row].chars[first_col]
-        if char == '└'
-          last_row = row
-          break
-        end
-      end
+    # Last row of the textbox in the capture
+    last_row = first_row + first_col_chars.find_index('└')
 
-      # Extract each line based on corners
-      textboxes << (first_row..last_row).map do |r|
-        @capture[r][first_col..last_col]
-      end
-    end
-
-    textboxes
+    (first_row..last_row).map { |row| @capture[row][first_col..last_col] }
   end
 
   def validate_textbox_header?(textbox, header)
@@ -195,8 +192,8 @@ class Parser
 
   def filter_todo_list(textbox)
     filter_textbox(textbox).select { it.size == 1 }
-                          .flatten
-                          .reject { it.include?('───────') }
+                           .flatten
+                           .reject { it.include?('───────') }
   end
 
   # For to-do list style boxes (Plot Development, Quests)
@@ -293,7 +290,4 @@ class Parser
       'Time Unit' => time_unit
     }
   end
-
-
-
 end

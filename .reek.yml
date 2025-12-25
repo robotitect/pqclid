@@ -1,4 +1,10 @@
 ---
 detectors:
   UtilityFunction:
-    enabled: false
+    enabled: true
+  TooManyStatements:
+    exclude:
+      - textbox_data_symbol
+  NestedIterators:
+    exclude:
+      - top_left_corners

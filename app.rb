@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'erb'
 
 require 'awesome_print'
 
-require './parser'
+require_relative 'parser'
 
 get '/' do
-
   parser = Parser.new('./capture.txt')
-  pqcli_data = parser.process
+  parser.process
+  pqcli_data = parser.data
 
   ap pqcli_data
 
