@@ -3,7 +3,7 @@ require 'erb'
 
 require 'awesome_print'
 
-require './parse_capture.rb'
+require './parser'
 
 get '/' do
 
