@@ -1,0 +1,161 @@
+<!-- home.erb -->
+<% require 'roman-numerals' %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= "#{charsheet["Name"]} (#{charsheet["Level"]}) · #{plot['Acts'].last.text }"%></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="row">
+    <div class="column">
+        <div id="charsheet">
+            <table class="container">
+                <th colspan="2">Character Sheet</th>
+                <% charsheet.each do |key, value| %>
+                    <% break if key == "XP" %>
+                    <tr>
+                        <td><%= key %></td>
+                        <td><%= value %></td>
+                    </tr>
+                <% end %>
+
+                <tr>
+                    <td><%= "Current XP" %></td>
+                    <td><%= "#{charsheet["XP"].to_i}" %></td>
+                </tr>
+
+                <tr>
+                    <td><%= "XP remaining" %></td>
+                    <td><%= "#{charsheet["XP Remaining"].to_i}" %></td>
+                </tr>
+
+                <tr>
+                    <td><%= "XP to next level" %></td>
+                    <td><%= "#{charsheet["XP Needed"].to_i}" %></td>
+                </tr>
+
+                <tr>
+                    <td><%= "Time Left" %></td>
+                    <td><%= "#{charsheet["Time Left (h)"].to_f}#{charsheet["Time Unit"]}" %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="column">
+        <div id="equipment">
+            <table class="container">
+                <th colspan="2">Equipment</th>
+                <% equipment.each do |key, value| %>
+                    <tr>
+                        <td><%= key %></td>
+                        <td><%= value %></td>
+                    </tr>
+                <% end %>
+            </table>
+        </div>
+    </div>
+
+    <div class="column">
+        <div id="plot-dev">
+            <table class="container">
+                <th colspan="2">Plot Development</th>
+                <% plot['Acts'].each do |act| %>
+                    <tr>
+                        <td><%= act.text %></td>
+                        <td><%= act.completed ? "✅" : "❌" %></td>
+                    </tr>
+                <% end %>
+
+                <tr>
+                    <td>Completed</td>
+                    <td><%= "#{plot["Completed %"].to_f}%" %></td>
+                </tr>
+
+                <tr>
+                    <td>Time Left</td>
+                    <td><%= "#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="column">
+        <div id="spellbook">
+            <table class="container">
+                <th colspan="2">Spellbook</th>
+                <% spellbook.sort_by { _1 }.sort_by { -_2 }.each do |spell, level|%>
+                    <tr>
+                        <td><%= spell %></td>
+                        <td><%= RomanNumerals.to_roman(level) %></td>
+                    </tr>
+                <% end %>
+            </table>
+        </div>
+    </div>
+
+    <div class="column">
+        <div id="inventory">
+            <table class="container">
+                <th colspan="2">Inventory</th>
+                <% inventory['Items'].each do |item, quantity| %>
+                    <tr>
+                        <td><%= item %></td>
+                        <td><%= quantity %></td>
+                    </tr>
+                <% end %>
+
+                <tr>
+                    <td>Spaces:</td>
+                    <td><%="#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]}"%></tc>
+                </tr>
+
+                <tr>
+                    <td>Encumbrance:</td>
+                    <td><%="#{inventory["Encumbrance (%)"].to_f}%"%></tc>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="column">
+        <div id="quests">
+            <table class="container">
+                <th colspan="2">Quests</th>
+                <% quests["Quests"].each do |quest|%>
+                    <tr>
+                        <td><%= quest.text %></td>
+                        <td><%= quest.completed ? "✅" : "❌" %></td>
+                    </tr>
+                <% end %>
+
+                <tr>
+                    <td>Completed</td>
+                    <td><%= "#{quests["Completed %"].to_f}%" %></td>
+                </tr>
+
+                <tr>
+                    <td>Time Left</td>
+                    <td><%= "#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="current-task">
+    <table class="container">
+        <tr>
+            <td><%= "<b>Current Task</b> #{current_task.text} (#{current_task.percent_completed.to_f}%)" %></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

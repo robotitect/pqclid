@@ -12,9 +12,24 @@ get '/' do
   parser.process
   pqcli_data = parser.data
 
-  ap pqcli_data
+  charsheet = pqcli_data[:character]
+  equipment = pqcli_data[:equipment]
+  plot = pqcli_data[:plot]
+  spellbook = pqcli_data[:spells]
+  inventory = pqcli_data[:inventory]
+  quests = pqcli_data[:quests]
+  current_task = pqcli_data[:current_task]
 
-  ERB.new(
-    'Hello World!'
-  ).result(binding)
+  ap plot
+  ap quests
+
+  erb :home, locals: {
+    charsheet: charsheet,
+    equipment: equipment,
+    plot: plot,
+    spellbook: spellbook,
+    inventory: inventory,
+    quests: quests,
+    current_task: current_task
+  }
 end
