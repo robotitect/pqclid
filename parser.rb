@@ -203,8 +203,8 @@ class Parser
     # For all lines but the last, get the tasks and the progress ([x] or [ ])
     tasks = filtered_tb[...-1].map do |line|
       Task.new(
-        text: line[1] == 'X',
-        completed: line[3..].strip
+        completed: line[1] == 'X',
+        text: line[3..].strip
       )
     end
 
