@@ -84,7 +84,6 @@ table tr {
 }
 
 table td {
-  width: 50%;
   vertical-align: top;
   justify-content: flex-start;
 }
@@ -94,16 +93,35 @@ table td:nth-child(1) {
   font-style: italic;
 }
 
+table td:nth-child(1).current-progress-item {
+  font-style: normal;
+}
+
+table td:nth-child(1).fancy-separator {
+  text-align: center;
+  color: var(--text-colour);
+  font-style: normal;
+  font-weight: bold;
+  padding-block: 2%;
+}
+
 table td:nth-child(2) {
   text-align: end;
 }
 
 table th {
   text-align: center;
+  padding-bottom: 2%;
+  font-family: 'Palatino', 'URW Palladio L', serif;
+  font-size: larger;
 }
 
 .column#current-task {
   text-align: center;
   align-items: stretch;
   padding-top: 0.5%;
+}
+
+.invisible-text {
+  color: var(--table-bg-colour);
 }

@@ -23,19 +23,16 @@
                 </tr>
             <% end %>
 
+            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+
             <tr>
-                <td><%= "Current XP" %></td>
-                <td><%= "#{charsheet["XP"].to_i}" %></td>
+                <td><%= "XP (#{charsheet["XP (%)"].to_f}%)" %></td>
+                <td><%= "#{charsheet["XP"].to_i}/#{charsheet["XP Needed"].to_i}" %></td>
             </tr>
 
             <tr>
-                <td><%= "XP remaining" %></td>
+                <td><%= "XP Remaining" %></td>
                 <td><%= "#{charsheet["XP Remaining"].to_i}" %></td>
-            </tr>
-
-            <tr>
-                <td><%= "XP to next level" %></td>
-                <td><%= "#{charsheet["XP Needed"].to_i}" %></td>
             </tr>
 
             <tr>
@@ -64,12 +61,13 @@
         <div class="table-wrapper">
         <table class="container">
             <th colspan="2">Quests</th>
-            <% quests["Quests"].each do |quest|%>
-                <tr>
-                    <td><%= quest.text %></td>
-                    <td><%= quest.completed ? "✅" : "👀" %></td>
-                </tr>
-            <% end %>
+
+            <%# <tr><td class="current-progress-item"><b>Current Quest</b></td></tr> %>
+
+            <tr>
+                <td><b><%= quests["Quests"].last.text %></b></td>
+                <td><%= quests["Quests"].last.completed ? "✅" : "👀" %></td>
+            </tr>
 
             <tr>
                 <td>Completed</td>
@@ -80,6 +78,18 @@
                 <td>Time Left</td>
                 <td><%= "#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
             </tr>
+
+            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+            <%# <tr><td colspan=2 class="invisible-text">INVISIBLE TEXT</td></tr> %>
+            <tr><td colspan=2 class="fancy-separator">Completed Quests</td></tr>
+
+            <% quests["Quests"][...-1].reverse.each do |quest, index| %>
+                <tr>
+                    <td><%= quest.text %></td>
+                    <td><%= quest.completed ? "✅" : "👀" %></td>
+                </tr>
+            <% end %>
+
         </table>
         </div>
     </div>
@@ -112,6 +122,8 @@
                 </tr>
             <% end %>
 
+            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+
             <tr>
                 <td>Spaces:</td>
                 <td><%="#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]}"%></tc>
@@ -129,22 +141,35 @@
         <div class="table-wrapper">
         <table class="container">
             <th colspan="2">Plot Development</th>
-            <% plot['Acts'].each do |act| %>
-                <tr>
-                    <td><%= act.text %></td>
-                    <td><%= act.completed ? "✅" : "👀" %></td>
-                </tr>
-            <% end %>
+
+            <%# <tr><td colspan=2 class="invisible-text">INVISIBLE TEXT</td></tr> %>
+
+            <tr>
+                <td><b><%= plot['Acts'].last.text %></b></td>
+                <td><%= plot['Acts'].last.completed ? "✅" : "👀" %></td>
+            </tr>
 
             <tr>
                 <td>Completed</td>
                 <td><%= "#{plot["Completed %"].to_f}%" %></td>
             </tr>
 
+
             <tr>
                 <td>Time Left</td>
                 <td><%= "#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
             </tr>
+
+            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+
+            <tr><td colspan=2 class="fancy-separator">Completed Story</td></tr>
+
+            <% plot['Acts'][...-1].reverse.each do |act| %>
+                <tr>
+                    <td><%= act.text %></td>
+                    <td><%= act.completed ? "✅" : "👀" %></td>
+                </tr>
+            <% end %>
         </table>
         </div>
     </div>
