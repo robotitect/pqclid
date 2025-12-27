@@ -1,12 +1,26 @@
+:root {
+  --text-colour: #F1E5FF;
+  --table-bg-colour: #4B2C57;
+  --table-border-colour: #C2D4E6;
+  --background-colour: #2E2A6D;
+}
+
+/* :root {
+  --text-colour: #bb8a89;
+  --table-bg-colour: #785589;
+  --table-border-colour: #ac7b7d;
+  --background-colour: #0d160b;
+} */
+
 body {
-  background-color: black;
-  padding-top: 2.5%;
+  background-color: var(--background-colour);
+  /* padding-top: 2.5%; */
 }
 
 * {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color:ghostwhite;
+  color: var(--text-colour);
 }
 
 h1 {
@@ -21,33 +35,49 @@ h1 {
 
 .row {
   display: flex;
-  padding-left: 15%;
-  padding-right: 15%;
+  padding-inline: 15%;
   width: 100%;
 }
 
 .column {
   flex: 0 0 33.333%;
+  min-width: 0;
   padding: 5px;
   padding-top: 1%;
   border-width: 2px;
-  border-color: white;
+  border-color: var(--table-border-colour);
 }
 
 table {
   width: 100%;
+  border: none;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  background-color: var(--table-bg-colour);
+
   border-style: solid;
-  border-color: white;
+  border-color: var(--table-border-colour);
   border-width: 3px;
   border-radius: 2%;
-  border-collapse: collapse;
+
   display: table;
   table-layout: fixed;
 }
 
+table tbody {
+  display: table;
+  width: 100%;
+  padding-inline: 5%;
+  padding-bottom: 4%;
+  padding-top: 2%;
+
+  /* padding-block: 5%; */
+}
+
 table td {
   width: 50%;
-  border-style: solid;
+  border-style: none;
   border-width: 1px;
 }
 
@@ -65,12 +95,25 @@ table th {
 }
 
 .row#current-task {
-  align-items: center;
-  justify-content: center;
-  text-align: left;
+  /* align-items: center;
+  justify-content: center; */
+  text-align: center;
+  /* padding: 0%; */
 }
 
 .row#current-task table {
-  padding-top: 1%;
+  /* padding-top: 1%; */
+  padding-block: 0%;
   border-style: hidden;
 }
+
+/* .column {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+table {
+  background: rgba(0, 255, 0, 0.2);
+}
+
+table {
+} */

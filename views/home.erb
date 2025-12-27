@@ -10,6 +10,15 @@
 
 <body>
 
+<div class="row" id="current-task">
+    <div class="container">
+        <%# <tr> %>
+        <%= "<b>Current Task</b>: #{current_task.text} (#{current_task.percent_completed.to_f}%)" %>
+        <%# </tr> %>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="column">
         <div id="charsheet">
@@ -61,28 +70,29 @@
     </div>
 
     <div class="column">
-        <div id="plot-dev">
+        <div id="quests">
             <table class="container">
-                <th colspan="2">Plot Development</th>
-                <% plot['Acts'].each do |act| %>
+                <th colspan="2">Quests</th>
+                <% quests["Quests"].each do |quest|%>
                     <tr>
-                        <td><%= act.text %></td>
-                        <td><%= act.completed ? "✅" : "❌" %></td>
+                        <td><%= quest.text %></td>
+                        <td><%= quest.completed ? "✅" : "❌" %></td>
                     </tr>
                 <% end %>
 
                 <tr>
                     <td>Completed</td>
-                    <td><%= "#{plot["Completed %"].to_f}%" %></td>
+                    <td><%= "#{quests["Completed %"].to_f}%" %></td>
                 </tr>
 
                 <tr>
                     <td>Time Left</td>
-                    <td><%= "#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
+                    <td><%= "#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
                 </tr>
             </table>
         </div>
     </div>
+
 </div>
 
 <div class="row">
@@ -125,37 +135,31 @@
     </div>
 
     <div class="column">
-        <div id="quests">
+        <div id="plot-dev">
             <table class="container">
-                <th colspan="2">Quests</th>
-                <% quests["Quests"].each do |quest|%>
+                <th colspan="2">Plot Development</th>
+                <% plot['Acts'].each do |act| %>
                     <tr>
-                        <td><%= quest.text %></td>
-                        <td><%= quest.completed ? "✅" : "❌" %></td>
+                        <td><%= act.text %></td>
+                        <td><%= act.completed ? "✅" : "❌" %></td>
                     </tr>
                 <% end %>
 
                 <tr>
                     <td>Completed</td>
-                    <td><%= "#{quests["Completed %"].to_f}%" %></td>
+                    <td><%= "#{plot["Completed %"].to_f}%" %></td>
                 </tr>
 
                 <tr>
                     <td>Time Left</td>
-                    <td><%= "#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
+                    <td><%= "#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
                 </tr>
             </table>
         </div>
     </div>
+
 </div>
 
-<div class="row" id="current-task">
-    <table class="container">
-        <tr>
-            <td><%= "<b>Current Task</b> #{current_task.text} (#{current_task.percent_completed.to_f}%)" %></td>
-        </tr>
-    </table>
-</div>
 
 </body>
 </html>
