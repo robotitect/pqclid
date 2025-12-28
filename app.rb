@@ -9,7 +9,12 @@ require_relative 'parser'
 
 get '/' do
   current_time = Time.now.strftime('%r [%F]')
-  _ = system('tmux', 'capture-pane', '-t', 'pqcli', '-pJ', out: '.capture')
+
+  if system('tmux', 'capture-pane', '-t', 'pqcli', '-pJ', out: '.capture')
+    puts "Capture: SUCCESS! Saved to .capture"
+  else
+    puts "Capture FAILED. Using previous .capture"
+  end
 
   parser = Parser.new('.capture')
   parser.process
