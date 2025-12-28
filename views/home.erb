@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="charsheet">
         <table class="container">
             <th colspan="2">Character Sheet</th>
             <% charsheet.each do |key, value| %>
@@ -23,7 +23,7 @@
                 </tr>
             <% end %>
 
-            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
 
             <tr>
                 <td><%= "XP (#{charsheet["XP (%)"].to_f}%)" %></td>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="equipment">
         <table class="container">
             <th colspan="2">Equipment</th>
             <% equipment.each do |key, value| %>
@@ -58,7 +58,7 @@
     </div>
 
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="quests">
         <table class="container">
             <th colspan="2">Quests</th>
 
@@ -77,8 +77,7 @@
                 <td><%= "#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
             </tr>
 
-            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
-            <%# <tr><td colspan=2 class="invisible-text">INVISIBLE TEXT</td></tr> %>
+            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
             <tr><td colspan=2 class="fancy-separator">Completed Quests</td></tr>
 
             <% quests["Quests"][...-1].reverse.each do |quest, index| %>
@@ -96,7 +95,7 @@
 
 <div class="row">
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="spells">
         <table class="container">
             <th colspan="2">Spellbook</th>
             <% spellbook.sort_by { _1 }.sort_by { -_2 }.each do |spell, level|%>
@@ -110,33 +109,34 @@
     </div>
 
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="inventory">
         <table class="container">
             <th colspan="2">Inventory</th>
+            <tr>
+                <% gold = inventory['Items'].delete('Gold') %>
+                <td> Gold: </td>
+                <td> <%= "#{gold} 🪙" %> </td>
+            </tr>
+
+            <tr>
+                <td>Spaces:</td>
+                <td><%="#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]} (#{inventory["Encumbrance (%)"].to_f}%)"%></tc>
+            </tr>
+
+            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
+
             <% inventory['Items'].each do |item, quantity| %>
                 <tr>
                     <td><%= item %></td>
                     <td><%= quantity %></td>
                 </tr>
             <% end %>
-
-            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
-
-            <tr>
-                <td>Spaces:</td>
-                <td><%="#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]}"%></tc>
-            </tr>
-
-            <tr>
-                <td>Encumbrance:</td>
-                <td><%="#{inventory["Encumbrance (%)"].to_f}%"%></tc>
-            </tr>
         </table>
         </div>
     </div>
 
     <div class="column">
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="plot">
         <table class="container">
             <th colspan="2">Plot Development</th>
 
@@ -156,7 +156,7 @@
                 <td><%= "#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
             </tr>
 
-            <tr><td colspan=2 class="fancy-separator">─── · 。ﾟ☆: *.☽ .* :☆ﾟ. ───</td></tr>
+            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
 
             <tr><td colspan=2 class="fancy-separator">Completed Story</td></tr>
 

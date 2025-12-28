@@ -74,6 +74,20 @@ h1 {
   flex-direction: column;
 }
 
+.table-wrapper#quests {
+  flex: 0 0 auto;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.table-wrapper#spells,
+.table-wrapper#inventory,
+.table-wrapper#plot {
+  flex: 0 0 auto;
+  max-height: 225px;
+  overflow-y: auto;
+}
+
 table {
   width: 100%;
   border: none;
