@@ -62,8 +62,6 @@
         <table class="container">
             <th colspan="2">Quests</th>
 
-            <%# <tr><td class="current-progress-item"><b>Current Quest</b></td></tr> %>
-
             <tr>
                 <td><b><%= quests["Quests"].last.text %></b></td>
                 <td><%= quests["Quests"].last.completed ? "✅" : "👀" %></td>
@@ -142,8 +140,6 @@
         <table class="container">
             <th colspan="2">Plot Development</th>
 
-            <%# <tr><td colspan=2 class="invisible-text">INVISIBLE TEXT</td></tr> %>
-
             <tr>
                 <td><b><%= plot['Acts'].last.text %></b></td>
                 <td><%= plot['Acts'].last.completed ? "✅" : "👀" %></td>
@@ -176,17 +172,21 @@
 
 </div>
 
-<div class="column" id="current-task">
-    <div class="container">
-        <%= "<b>Current Task</b>: #{current_task.text} (#{current_task.percent_completed.to_f}%)" %>
+<div class="current-task">
+    <div class="table-wrapper">
+        <table>
+        <tr>
+            <td>
+            <%= "<b>Current Task</b>: #{current_task.text} (#{current_task.percent_completed.to_f}%)" %>
+            </td>
+            <td>
+            <%= "#{running ? '🟢' : '🛑'} #{current_time}" %>
+            </td>
+        <tr>
+        </table>
     </div>
 </div>
 
-<div class="column" id="current-task">
-    <div class="container">
-        <b>Current Time</b>: <%= current_time %>
-    </div>
-</div>
 
 </body>
 </html>

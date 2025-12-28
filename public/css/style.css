@@ -25,6 +25,22 @@ h1 {
   width: 100%;
 }
 
+.current-task {
+  display: flex;
+  padding-inline: 15.4%;
+  width: 100%;
+  align-items: stretch;
+}
+
+.current-task .table-wrapper {
+  padding: 0;
+  border-radius: 0;
+}
+
+.current-task .table-wrapper tbody {
+  padding: 0.5%;
+}
+
 .row {
   /* display: flex; */
   display: grid;
@@ -51,7 +67,7 @@ h1 {
   border-style: solid;
   border-color: var(--table-border-colour);
   border-width: 3px;
-  border-radius: 2%;
+  border-radius: 5%;
   background-color: var(--table-bg-colour);
   padding: 6px;
   display: flex;
@@ -61,6 +77,7 @@ h1 {
 table {
   width: 100%;
   border: none;
+  border-radius: 5%;
   border-collapse: separate;
   border-spacing: 0;
   background-color: var(--table-bg-colour);
@@ -114,12 +131,6 @@ table th {
   padding-bottom: 2%;
   font-family: 'Palatino', 'URW Palladio L', serif;
   font-size: larger;
-}
-
-.column#current-task {
-  text-align: center;
-  align-items: stretch;
-  padding-top: 0.5%;
 }
 
 .invisible-text {

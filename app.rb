@@ -8,15 +8,22 @@ require 'awesome_print'
 require_relative 'parser'
 
 get '/' do
-  current_time = Time.now.strftime('%r [%F]')
 
-  if system('tmux', 'capture-pane', '-t', 'pqcli', '-pJ', out: '.capture')
-    puts "Capture: SUCCESS! Saved to .capture"
+  running = system('tmux', 'capture-pane', '-t', 'pqcli', '-pJ', out: '.capture')
+  filename = '.capture'
+
+  if running
+    puts "Capture: SUCCESS! pqcli running, capture saved to .capture and .capture.old"
+    _ = system('cp', '.capture', '.capture.old')
   else
-    puts "Capture FAILED. Using previous .capture"
+    print "Capture FAILED. "
+    puts "pqcli most likely not running, using previous .capture.old"
+    filename = '.capture.old'
   end
 
-  parser = Parser.new('.capture')
+  current_time = File.mtime(filename).strftime('%r [%F]')
+
+  parser = Parser.new(filename)
   parser.process
   pqcli_data = parser.data
 
@@ -36,6 +43,7 @@ get '/' do
     inventory: pqcli_data[:inventory],
     quests: pqcli_data[:quests],
     current_task: pqcli_data[:current_task],
-    current_time: current_time
+    current_time: current_time,
+    running: running,
   }
 end
