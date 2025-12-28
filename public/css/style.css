@@ -123,7 +123,7 @@ table td {
 
 table td:nth-child(1) {
   text-align: left;
-  font-style: italic;
+  font-style: normal;
 }
 
 table td:nth-child(1).current-progress-item {
@@ -140,6 +140,7 @@ table td:nth-child(1).fancy-separator {
 
 table td:nth-child(2) {
   text-align: end;
+  vertical-align: bottom;
 }
 
 table th {
