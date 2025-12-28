@@ -222,6 +222,37 @@ class Parser
         charsheet_data[key] = val.to_r
       end
     end
+
+    charsheet_data.transform_keys! do |key|
+      case key
+      when 'Name'
+        '❝ ' + key
+      when 'Race'
+        '🏁 ' + key
+      when 'Class'
+        '✍️ ' + key
+      when 'Level'
+        '📈 ' + key
+      when 'STR'
+        '💪 ' + key
+      when 'CON'
+        '🩸 ' + key
+      when 'DEX'
+        '🤌 ' + key
+      when 'INT'
+        '🧠 ' + key
+      when 'WIS'
+        '🧓 ' + key
+      when 'CHA'
+        '😍 ' + key
+      when 'HP Max'
+        '❤️ ' + key
+      when 'MP Max'
+        '🪄 ' + key
+      else
+        key
+      end
+    end
   end
 
   def parse_character_sheet(textbox)
