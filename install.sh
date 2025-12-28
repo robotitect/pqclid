@@ -2,10 +2,10 @@
 
 if [ "$os" = "Linux"]; then
     # Install tmux if not present
-    if command -v tmux > /dev/null 2>&1; then
-        echo "tmux installed"
+    if command -v tmux > /dev/null 2>&1 && command -v pipx > /dev/null 2>&1; then
+        echo "tmux & pipx installed"
     else
-        packagesNeeded=(tmux)
+        packagesNeeded=(tmux pipx)
         if [ -x "$(command -v apk)" ]; then
             sudo apk add --no-cache "${packagesNeeded[@]}"
         elif [ -x "$(command -v apt-get)" ]; then
@@ -15,20 +15,22 @@ if [ "$os" = "Linux"]; then
         elif [ -x "$(command -v zypper)" ]; then
             sudo zypper install "${packagesNeeded[@]}"
         elif [ -x "$(command -v pacman)" ]; then
-            sudo pacman -S tmux
+            sudo pacman -S "${packagesNeeded[@]}"
         elif [ -x "$(command -v yum)" ]; then
-            sudo yum install tmux
+            sudo yum install "${packagesNeeded[@]}"
         else
             echo "FAILED TO INSTALL PACKAGE: Package manager not found."
             echo "You must manually install: "${packagesNeeded[@]}""
         fi
+
+        pipx ensurepath
     fi
 
     # Install pqcli latest version from GitHub
     cd /tmp/
     git clone https://github.com/rr-/pq-cli.git
     cd pq-cli
-    pip install --user .
+    pipx install .
 
     # Install and start the daemon
     sudo mv pqcli.service /etc/systemd/system/
