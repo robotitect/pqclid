@@ -1,2 +1,4 @@
 AllCops:
   NewCops: enable
+Metrics/ClassLength:
+  CountAsOne: ['array', 'hash', 'method_call']
