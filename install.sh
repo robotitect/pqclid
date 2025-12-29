@@ -25,15 +25,22 @@ if [ "$OS" = "Linux" ]; then
         pipx ensurepath
     fi
 
-    # Install pqcli latest version from GitHub
-    pushd /tmp/
-    git clone https://github.com/rr-/pq-cli.git
-    cd pq-cli
-    pipx install .
-    popd
+    if command -v pqcli > /dev/null 2>&1; then
+        echo "pqcli installed"
+    else
+        # Install pqcli latest version from GitHub
+        pushd /tmp/
+        git clone https://github.com/rr-/pq-cli.git
+        cd pq-cli
+        pipx install .
+        popd
+    fi
+
+    # The user needs to create a character and start a save
+    pqcli
 
     # Install and start the daemon
-    sudo mv pqclid.service /etc/systemd/system/
+    sudo cp pqclid.service /etc/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl enable pqclid
     sudo systemctl start pqclid
