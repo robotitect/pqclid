@@ -223,32 +223,36 @@ class Parser
       end
     end
 
-    charsheet_data.transform_keys! do |key|
+    add_emojis_to(charsheet_data)
+  end
+
+  def add_emojis_to(textbox_data)
+    textbox_data.transform_keys! do |key|
       case key
       when 'Name'
-        '❝ ' + key
+        "❝ #{key}"
       when 'Race'
-        '🏁 ' + key
+        "🏁 #{key}"
       when 'Class'
-        '✍️ ' + key
+        "✍️ #{key}"
       when 'Level'
-        '📈 ' + key
+        "📈 #{key}"
       when 'STR'
-        '💪 ' + key
+        "💪 #{key}"
       when 'CON'
-        '🩸 ' + key
+        "🩸 #{key}"
       when 'DEX'
-        '🤌 ' + key
+        "🤌 #{key}"
       when 'INT'
-        '🧠 ' + key
+        "🧠 #{key}"
       when 'WIS'
-        '🧓 ' + key
+        "🧓 #{key}"
       when 'CHA'
-        '😍 ' + key
+        "😍 #{key}"
       when 'HP Max'
-        '❤️ ' + key
+        "❤️ #{key}"
       when 'MP Max'
-        '🪄 ' + key
+        "🪄 #{key}"
       else
         key
       end
