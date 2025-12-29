@@ -35,8 +35,8 @@ if [ "$OS" = "Linux" ]; then
     # Install and start the daemon
     sudo mv pqclid.service /etc/systemd/system/
     sudo systemctl daemon-reload
-    sudo systemctl enable pqcli
-    sudo systemctl start pqcli
+    sudo systemctl enable pqclid
+    sudo systemctl start pqclid
 
 else
     echo "Not a Linux machine, quitting..."
