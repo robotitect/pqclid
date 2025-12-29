@@ -1,39 +1,39 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ "$os" = "Linux"]; then
+OS="`uname`"
+
+if [ "$OS" = "Linux" ]; then
     # Install tmux if not present
     if command -v tmux > /dev/null 2>&1 && command -v pipx > /dev/null 2>&1; then
         echo "tmux & pipx installed"
     else
-        packagesNeeded=(tmux pipx)
-        if [ -x "$(command -v apk)" ]; then
-            sudo apk add --no-cache "${packagesNeeded[@]}"
-        elif [ -x "$(command -v apt-get)" ]; then
-            sudo apt-get install "${packagesNeeded[@]}"
+        PACKAGES="tmux pipx"
+        if [ -x "$(command -v apt-get)" ]; then
+            sudo apt-get -y install $PACKAGES
         elif [ -x "$(command -v dnf)" ]; then
-            sudo dnf install "${packagesNeeded[@]}"
-        elif [ -x "$(command -v zypper)" ]; then
-            sudo zypper install "${packagesNeeded[@]}"
+            sudo dnf install $PACKAGES
         elif [ -x "$(command -v pacman)" ]; then
-            sudo pacman -S "${packagesNeeded[@]}"
+            sudo pacman -S $PACKAGES
         elif [ -x "$(command -v yum)" ]; then
-            sudo yum install "${packagesNeeded[@]}"
+            sudo yum install $PACKAGES
         else
-            echo "FAILED TO INSTALL PACKAGE: Package manager not found."
-            echo "You must manually install: "${packagesNeeded[@]}""
+            echo "FAILED TO INSTALL PACKAGES: Package manager not found."
+            echo "You must manually install:"
+            echo $PACKAGES
         fi
 
         pipx ensurepath
     fi
 
     # Install pqcli latest version from GitHub
-    cd /tmp/
+    pushd /tmp/
     git clone https://github.com/rr-/pq-cli.git
     cd pq-cli
     pipx install .
+    popd
 
     # Install and start the daemon
-    sudo mv pqcli.service /etc/systemd/system/
+    sudo mv pqclid.service /etc/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl enable pqcli
     sudo systemctl start pqcli
