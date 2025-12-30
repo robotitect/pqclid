@@ -41,7 +41,7 @@ if [ "$OS" = "Linux" ]; then
 
     # Install and start the daemon
     sudo cp -i pqclid.service ~/.config/systemd/user/pqclid.service
-    cp tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
+    cp -i tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
     sudo loginctl enable-linger "$USER"
 
