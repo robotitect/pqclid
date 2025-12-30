@@ -3,17 +3,17 @@ Description=Progress Quest CLI (curses) in tmux
 After=network.target
 
 [Service]
-Environment=TERM=tmux-256color
-Environment=HOME=$HOME
+Type=oneshot
+User=raghib
+WorkingDirectory=/home/raghib
 
-ExecStart=/usr/bin/tmux new-session -s pqcli -d '$HOME/.local/bin/pqcli --load-save 1'
+# Clean up old socket
+ExecStartPre=/bin/rm -f /home/raghib/.tmux_socket
 
-# If pqcli crashes, restart tmux (restarting pqcli)
-Restart=always
-RestartSec=2
+# Start detached session using explicit socket
+ExecStart=/usr/bin/tmux -S /home/raghib/.tmux_socket new-session -d -s pqcli '/home/raghib/.local/bin/pqcli --load-save 1'
 
-# Prevent systemd from killing tmux
-KillMode=process
+RemainAfterExit=yes
 
 StandardOutput=journal
 StandardError=journal
