@@ -46,7 +46,7 @@ if [ "$OS" = "Linux" ]; then
     sudo loginctl enable-linger "$USER"
 
     systemctl --user daemon-reload
-    systemctl --user enable --now name.service
+    systemctl --user enable --now pqclid.service
 else
     echo "Not a Linux machine, quitting..."
 fi
