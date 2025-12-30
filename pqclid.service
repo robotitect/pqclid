@@ -1,19 +1,18 @@
 [Unit]
 Description=Progress Quest CLI (curses) in tmux
-After=network.target
+After=default.target
 
 [Service]
 Type=oneshot
-User=raghib
-WorkingDirectory=/home/raghib
 
-# Clean up old socket
-# ExecStartPre=/bin/rm -f /home/raghib/.tmux_socket
+# Clean up stale socket
+ExecStartPre=/bin/rm -f %h/.tmux_socket
 
-# Start detached session using explicit socket
-# ExecStart=/usr/bin/tmux -S /home/raghib/.tmux_socket new-session -d -s pqcli '/home/raghib/.local/bin/pqcli --load-save 1'
+# ExecStart=/bin/sh -lc 'rm -f "$HOME/.tmux_socket"; tmux -S "$HOME/.tmux_socket" new-session -d -s pqcli "$HOME/.local/bin/pqcli --load-save 1"'
 
-ExecStart=/bin/sh -lc 'rm -f "$HOME/.tmux_socket"; tmux -S "$HOME/.tmux_socket" new-session -d -s pqcli "$HOME/.local/bin/pqcli --load-save 1"'
+# Start detached tmux session with restart loop
+ExecStart=/usr/bin/tmux -S %h/.tmux_socket new-session -d -s pqcli \
+  "%h/.local/bin/pqcli --load-save 1 || true; while true; do sleep 2; %h/.local/bin/pqcli --load-save 1; done"
 
 RemainAfterExit=yes
 
