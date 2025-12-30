@@ -3,7 +3,7 @@
 # Contains constants and methods dealing with capturing from the tmux session
 # and writing it to file.
 module PqCliSys
-  SOCKET = "#{Dir.home}/.tmux_socket".freeze
+  SOCKET = "#{Dir.home}/.tmux_pqcli_socket".freeze
   TMUX_PREFIX_CMDS = ['tmux', '-S', SOCKET].freeze
 
   CAPTURE_FILENAME_OUT_TEXT = {

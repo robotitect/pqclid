@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-SOCKET="$HOME/.tmux_socket"
+SOCKET="$HOME/.tmux_pqcli_socket"
 SESSION="pqcli"
 CMD="$HOME/.local/bin/pqcli --load-save 1"
 
