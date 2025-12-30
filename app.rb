@@ -6,6 +6,8 @@ require 'erb'
 require_relative 'parser'
 require_relative 'pq_cli_sys'
 
+set :port, 11662
+
 get '/' do
   filename, capture_success = PqCliSys.capture_and_write_to_file
   capture_time = File.mtime(filename).strftime('%r [%F]')
