@@ -39,6 +39,8 @@ module PqCliParse
   PqData = Struct.new(:charsheet, :equipment, :plot, :spells, :inventory,
                       :quests, :current_task)
 
+  module_function
+
   def top_left_corners_from_line(line, row_number)
     indices_top_left =
       line.enum_for(:scan, REGEX_MATCHER[:top_left_corner]).map do
@@ -263,13 +265,4 @@ module PqCliParse
     title = textbox.first[REGEX_MATCHER[:title]].strip
     HEADER_TO_PARSED_SYMBOL[title].call(textbox)
   end
-
-  module_function :top_left_corners_from_line, :validate_textbox_header?,
-                  :parse_percent_time_left, :calc_xp, :convert_character_sheet,
-                  :add_emojis_to, :one_textbox, :filter_textbox, :parse_generic,
-                  :parse_experience_textbox, :parse_experience,
-                  :filter_todo_list, :parse_todo_list, :parse_character_sheet,
-                  :parse_equipment, :parse_plot_development, :parse_spell_book,
-                  :filter_inventory, :parse_inventory, :parse_quests,
-                  :parse_textbox_data_and_symbol, :textboxes
 end

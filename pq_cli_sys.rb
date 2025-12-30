@@ -15,6 +15,8 @@ module PqCliSys
                        'previous .capture.old']
   }.freeze
 
+  module_function
+
   def capture_and_write_to_file_sys
     # Set window size to 150x10,000 for max information
     resized_for_capture = system(*TMUX_PREFIX_CMDS, 'resize-window', '-t',
@@ -40,6 +42,4 @@ module PqCliSys
 
     [filename, success]
   end
-
-  module_function :capture_and_write_to_file, :capture_and_write_to_file_sys
 end
