@@ -1,7 +1,7 @@
 #!/bin/bash
 systemctl --user stop pqclid.service
 
-tmux -S "$HOME/.tmux_socket" kill-session -t name 2>/dev/null || true
+tmux -S "$HOME/.tmux_socket" kill-session -t pqcli 2>/dev/null || true
 
 systemctl --user disable pqclid.service
 
