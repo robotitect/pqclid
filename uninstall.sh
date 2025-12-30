@@ -5,7 +5,7 @@ tmux -S "$HOME/.tmux_socket" kill-session -t name 2>/dev/null || true
 
 systemctl --user disable pqclid.service
 
-rm -v ~/.config/systemd/user/pqclid.service
+rm -f -v ~/.config/systemd/user/pqclid.service
 
 systemctl --user daemon-reload
 systemctl --user reset-failed
