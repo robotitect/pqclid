@@ -41,10 +41,12 @@ if [ "$OS" = "Linux" ]; then
 
     # Install and start the daemon
     sudo cp -i pqclid.service ~/.config/systemd/user/pqclid.service
-    sudo systemctl daemon-reload
-    sudo systemctl enable pqclid
-    sudo systemctl start pqclid
+    cp tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
+    sudo loginctl enable-linger "$USER"
+
+    systemctl --user daemon-reload
+    systemctl --user enable --now name.service
 else
     echo "Not a Linux machine, quitting..."
 fi

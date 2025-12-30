@@ -3,21 +3,14 @@ Description=Progress Quest CLI (curses) in tmux
 After=default.target
 
 [Service]
-Type=oneshot
+Type=simple
+ExecStart=%h/.local/bin/tmux-pq-supervisor
 
-# Clean up stale socket
-ExecStartPre=/bin/rm -f %h/.tmux_socket
-
-# ExecStart=/bin/sh -lc 'rm -f "$HOME/.tmux_socket"; tmux -S "$HOME/.tmux_socket" new-session -d -s pqcli "$HOME/.local/bin/pqcli --load-save 1"'
-
-# Start detached tmux session with restart loop
-ExecStart=/usr/bin/tmux -S %h/.tmux_socket new-session -d -s pqcli \
-  "%h/.local/bin/pqcli --load-save 1 || true; while true; do sleep 2; %h/.local/bin/pqcli --load-save 1; done"
-
-RemainAfterExit=yes
+Restart=always
+RestartSec=2
 
 StandardOutput=journal
 StandardError=journal
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

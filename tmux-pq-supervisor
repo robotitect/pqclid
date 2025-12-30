@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+SOCKET="$HOME/.tmux_socket"
+SESSION="pqcli"
+CMD="$HOME/.local/bin/pqcli --load-save 1"
+
+# Ensure socket directory exists
+mkdir -p "$(dirname "$SOCKET")"
+
+while true; do
+  if ! tmux -S "$SOCKET" has-session -t "$SESSION" 2>/dev/null; then
+    tmux -S "$SOCKET" new-session -d -s "$SESSION" "$CMD"
+  fi
+  sleep 2
+done
