@@ -8,10 +8,12 @@ User=raghib
 WorkingDirectory=/home/raghib
 
 # Clean up old socket
-ExecStartPre=/bin/rm -f /home/raghib/.tmux_socket
+# ExecStartPre=/bin/rm -f /home/raghib/.tmux_socket
 
 # Start detached session using explicit socket
-ExecStart=/usr/bin/tmux -S /home/raghib/.tmux_socket new-session -d -s pqcli '/home/raghib/.local/bin/pqcli --load-save 1'
+# ExecStart=/usr/bin/tmux -S /home/raghib/.tmux_socket new-session -d -s pqcli '/home/raghib/.local/bin/pqcli --load-save 1'
+
+ExecStart=/bin/sh -lc 'rm -f "$HOME/.tmux_socket"; tmux -S "$HOME/.tmux_socket" new-session -d -s pqcli "$HOME/.local/bin/pqcli --load-save 1"'
 
 RemainAfterExit=yes
 
