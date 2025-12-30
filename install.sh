@@ -40,7 +40,7 @@ if [ "$OS" = "Linux" ]; then
     pqcli
 
     # Install and start the daemon
-    sudo cp -i pqclid.service ~/.config/systemd/user/name.service
+    sudo cp -i pqclid.service ~/.config/systemd/user/pqclid.service
     sudo systemctl daemon-reload
     sudo systemctl enable pqclid
     sudo systemctl start pqclid
