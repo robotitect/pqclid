@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'awesome_print'
 require 'roman-numerals'
 
 require_relative 'pq_cli_parse'
