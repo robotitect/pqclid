@@ -37,7 +37,17 @@ if [ "$OS" = "Linux" ]; then
     fi
 
     # The user needs to create a character and start a save
-    pqcli
+    while [ ! -f ~/.config/pqcli/save.dat ]; do
+        read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when don"
+        pqcli
+
+        if [ -f ~/.config/pqcli/save.dat ]
+            echo "pqcli save file created"
+        else
+            echo "pqcli save file not created, try again."
+        fi
+    done
+    echo "pqcli save file found"
 
     # Install and start the daemon
     sudo cp -v pqclid.service ~/.config/systemd/user/pqclid.service
