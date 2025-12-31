@@ -50,7 +50,7 @@ if [ "$OS" = "Linux" ]; then
     echo "pqcli save file found"
 
     # Install and start the daemon
-    sudo cp -v pqclid.service ~/.config/systemd/user/pqclid.service
+    mkdir -pv ~/.config/systemd/user/ && cp -v pqclid.service ~/.config/systemd/user/pqclid.service
     cp -v tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
     sudo loginctl enable-linger "$USER"
