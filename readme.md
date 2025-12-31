@@ -115,11 +115,17 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 	* `pipx` OR `pqcli`
 		* `git` may also be needed
 	* `tmux`
-	* `ruby`, gems:
+	* `ruby` (3.4.7), gems:
 		* `sinatra`
 		* `puma`
 		* `rackup`
 		* `roman-numerals`
+- [ ] Create a deploy script / daemon for the web interface
+	* calling these commands to install the gems
+		* `bundle config set --local path 'vendor/bundle'`
+		* `bundle install --deployment --without development test`
+	* and this one to run the server
+		* `bundle exec ruby app.rb`
 
 ### Tests
 
