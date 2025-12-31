@@ -115,12 +115,12 @@
             <th colspan="2">Inventory</th>
             <tr>
                 <% gold = inventory['Items'].delete('Gold') %>
-                <td> Gold: </td>
-                <td> <%= "#{gold} 🪙" %> </td>
+                <td> 🪙 Gold </td>
+                <td> <%= "#{gold}" %> </td>
             </tr>
 
             <tr>
-                <td><%= "Spaces:" %></td>
+                <td><%= "🎒 Spaces" %></td>
                 <td><%= "#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]}" %></tc>
             </tr>
 
