@@ -1,6 +1,6 @@
 # pqclid
 
-Progress Quest CLI install and configuration to run as a daemon.
+Progress Quest CLI installer and configurer to run as a daemon.
 Also includes a web interface displaying current status.
 
 ## Principle
@@ -94,9 +94,9 @@ Clone the directory and run:
 This installs (if not already present):
 
 1. `tmux`
-  * This is used to run the `pqcli` interface in the background.
+	* This is used to run the `pqcli` interface in the background.
 2. `pipx`
-  * This is used to install `pqcli` without messing with Python environments
+	* This is used to install `pqcli` without messing with Python environments
 3. `pqcli` (via `pipx`)
 
 It will then startup `pqcli`'s interface once. You will need to create a character at this point and exit out of the program. This creates an initial save that the daemon picks up and loads from.
@@ -110,12 +110,30 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 
 
 ## TODO
-- [ ] Test the install script
+- [ ] Prompt the user about creating a character in install script (3s timeout)
+- [ ] Ship/install a local version of (needs to support different CPU architectures)
+	* `pipx` OR `pqcli`
+		* `git` may also be needed
+	* `tmux`
+	* `ruby`, gems:
+		* `sinatra`
+		* `puma`
+		* `rackup`
+		* `roman-numerals`
+
+### Tests
+
+- [ ] Different package managers
 	- [ ] Ubuntu (`apt`)
 	- [ ] Fedora (`dnf`)
 	- [ ] Manjaro (`pacman`)
-- [ ] Prompt the user about creating a character in install script (3s timeout)
-- [ ] Install script installs its own version of pipx and tmux and ruby and uses those
+- [ ] Different architectures
+	- [ ] `x86_64`
+	- [ ] `aarch64`
+	- [ ] `armv7` (RPis)
+	- [ ] `armv6` (RPi 1 / Zero)
+
+### Wishlist
 - [ ] Create command for attaching to the instance
 - [ ] Create command for displaying a snapshot of the instance
 
