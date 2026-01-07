@@ -24,7 +24,7 @@
                 </tr>
             <% end %>
 
-            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
+            <tr><td colspan=2 class="fancy-separator">· 。ﾟ☆: *.☽ .* :☆ﾟ.</td></tr>
 
             <tr>
                 <td><%= "XP (#{charsheet["XP (%)"].to_f}%)" %></td>
@@ -78,7 +78,7 @@
                 <td><%= "~#{quests["Time Left"].to_f}#{quests["Time Unit"]}" %></td>
             </tr>
 
-            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
+            <tr><td colspan=2 class="fancy-separator">· 。ﾟ☆: *.☽ .* :☆ﾟ.</td></tr>
             <tr><td colspan=2 class="fancy-separator">Completed Quests</td></tr>
 
             <% quests["Quests"][...-1].reverse.each do |quest, index| %>
@@ -124,7 +124,7 @@
                 <td><%= "#{inventory["Inventory Spaces Filled"].to_i}/#{inventory["Inventory Spaces Max"]}" %></tc>
             </tr>
 
-            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
+            <tr><td colspan=2 class="fancy-separator">· 。ﾟ☆: *.☽ .* :☆ﾟ.</td></tr>
 
             <% inventory['Items'].each do |item, quantity| %>
                 <tr>
@@ -157,7 +157,7 @@
                 <td><%= "~#{plot["Time Left"].to_f}#{plot["Time Unit"]}" %></td>
             </tr>
 
-            <tr><td colspan=2 class="fancy-separator">──── · 。ﾟ☆: *.☽ .* :☆ﾟ. ────</td></tr>
+            <tr><td colspan=2 class="fancy-separator">· 。ﾟ☆: *.☽ .* :☆ﾟ.</td></tr>
 
             <tr><td colspan=2 class="fancy-separator">Completed Story</td></tr>
 
