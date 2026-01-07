@@ -76,6 +76,7 @@ module PqCliParse
   end
 
   def calc_xp(xp_remaining, xp_percent)
+    # TODO: fix zero division error here
     xp_total_to_next_lvl =
       (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
     xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i

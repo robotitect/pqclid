@@ -127,6 +127,9 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 	* and this one to run the server
 		* `bundle exec ruby app.rb`
 
+### Bugs
+- [ ] Divide by zero error in PqCliParse#calc_xp
+
 ### Tests
 
 - [ ] Different package managers
@@ -142,6 +145,7 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 ### Wishlist
 - [ ] Create command for attaching to the instance
 - [ ] Create command for displaying a snapshot of the instance
+- [ ] Add appropriate emojis to inventory items based on text classification
 
 ### Completed
 - [x] Use `pipx` to install pqcli (from github repo)
