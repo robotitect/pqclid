@@ -79,10 +79,7 @@ module PqCliParse
   end
 
   def calc_xp(xp_remaining, xp_percent)
-    xp_total_to_next_lvl = @xp_total_cached
-    xp_current = @xp_current_cached
-
-    unless xp_percent.zero? || xp_remaining.zero?
+    unless xp_percent.to_r == 100r || xp_remaining.zero?
       # Normal behaviour when no zero division error imminent
       xp_total_to_next_lvl =
         (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
@@ -90,9 +87,12 @@ module PqCliParse
 
       @xp_total_cached = xp_total_to_next_lvl
       @xp_current_cached = xp_current
+    else
+      # When XP% is 100% or XP %emaining is 0, current XP = total XP required
+      @xp_current_cached = @xp_total_cached
     end
 
-    [xp_current, xp_total_to_next_lvl]
+    [@xp_current_cached, @xp_total_cached]
   end
 
   def convert_character_sheet(charsheet_data)
