@@ -39,6 +39,9 @@ module PqCliParse
   PqData = Struct.new(:charsheet, :equipment, :plot, :spells, :inventory,
                       :quests, :current_task)
 
+  @xp_current_cached = 0
+  @xp_total_cached = 0
+
   module_function
 
   def top_left_corners_from_line(line, row_number)
@@ -76,10 +79,19 @@ module PqCliParse
   end
 
   def calc_xp(xp_remaining, xp_percent)
-    # TODO: fix zero division error here
-    xp_total_to_next_lvl =
-      (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
-    xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i
+    xp_total_to_next_lvl = @xp_total_cached
+    xp_current = @xp_current_cached
+
+    unless xp_percent.zero? || xp_remaining.zero?
+      # Normal behaviour when no zero division error imminent
+      xp_total_to_next_lvl =
+        (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
+      xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i
+
+      @xp_total_cached = xp_total_to_next_lvl
+      @xp_current_cached = xp_current
+    end
+
     [xp_current, xp_total_to_next_lvl]
   end
 

@@ -128,7 +128,7 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 		* `bundle exec ruby app.rb`
 
 ### Bugs
-- [ ] Divide by zero error in PqCliParse#calc_xp
+- [x] Divide by zero error in PqCliParse#calc_xp
 
 ### Tests
 
