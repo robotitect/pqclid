@@ -129,9 +129,10 @@ if [ "$OS" = "Linux" ]; then
         cd "$TMP"
 
         log "Downloading ruby-build"
-        git clone https://github.com/ruby/ruby-build.git
+        curl -L https://github.com/ruby/ruby-build/archive/refs/heads/master.tar.gz | tar xz
+        cd ruby-build-master
         PREFIX="$APP_DIR/ruby/$RUBY_VERSION"
-        ruby-build/bin/ruby-build "$RUBY_VERSION" "$PREFIX"
+        ./bin/ruby-build "$RUBY_VERSION" "$PREFIX"
 
         ln -s "$PREFIX/bin/ruby" "$BIN_DIR/ruby"
         ln -s "$PREFIX/bin/gem" "$BIN_DIR/gem"
