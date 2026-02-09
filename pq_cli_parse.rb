@@ -85,7 +85,7 @@ module PqCliParse
     else
       # Normal behaviour when no zero division error imminent
       xp_total_to_next_lvl =
-        (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
+        (xp_remaining / ((1 00r - xp_percent)/100r)).round.to_i
       xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i
 
       @xp_total_cached = xp_total_to_next_lvl
