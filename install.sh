@@ -155,7 +155,7 @@ if [ "$OS" = "Linux" ]; then
         read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
         pqcli
 
-        if [ -f ~/.config/pqcli/save.dat ]
+        if [ -f ~/.config/pqcli/save.dat ]; then
             echo "pqcli save file created"
         else
             echo "pqcli save file not created, try again."
