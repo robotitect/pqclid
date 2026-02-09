@@ -159,7 +159,7 @@ if [ "$OS" = "Linux" ]; then
 
         log "Downloading ruby-build"
         curl -fsSL https://github.com/rbenv/ruby-build/archive/refs/tags/v20260121.tar.gz | tar xz
-        cd ruby-build-master
+        cd v20260121
         PREFIX="$APP_DIR/ruby/$RUBY_VERSION"
         ./bin/ruby-build "$RUBY_VERSION" "$PREFIX"
 
