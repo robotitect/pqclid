@@ -146,6 +146,7 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 - [ ] Create command for attaching to the instance
 - [ ] Create command for displaying a snapshot of the instance
 - [ ] Add appropriate emojis to inventory items based on text classification
+	- [ ] Record inventory items on each screengrab as data
 
 ### Completed
 - [x] Use `pipx` to install pqcli (from github repo)
