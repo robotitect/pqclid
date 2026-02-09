@@ -169,6 +169,13 @@ if [ "$OS" = "Linux" ]; then
         log "Ruby installed at $PREFIX"
     }
 
+    install_pqclid() {
+        # git clone https://github.com/rr-/pq-cli.git
+        # cd pq-cli
+        # pipx install .
+        pipx install git+https://github.com/rr-/pq-cli.git
+    }
+
     #######################################
     # Run everything
     #######################################
@@ -176,6 +183,7 @@ if [ "$OS" = "Linux" ]; then
     install_tmux
     install_curl
     install_ruby
+    install_pqclid
 
     log "Installation complete"
     log "Add this to your shell config if needed:"
