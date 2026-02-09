@@ -158,7 +158,7 @@ if [ "$OS" = "Linux" ]; then
         cd "$TMP"
 
         log "Downloading ruby-build"
-        curl -L https://github.com/ruby/ruby-build/archive/refs/heads/master.tar.gz | tar xz
+        curl -fsSL https://github.com/ruby/ruby-build/archive/refs/heads/master.tar.gz | tar xz
         cd ruby-build-master
         PREFIX="$APP_DIR/ruby/$RUBY_VERSION"
         ./bin/ruby-build "$RUBY_VERSION" "$PREFIX"
