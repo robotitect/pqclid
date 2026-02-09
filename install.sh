@@ -21,16 +21,45 @@ if [ "$OS" = "Linux" ]; then
     }
 
     detect_pm() {
-    if command_exists apt-get; then echo "apt"
-        elif command_exists dnf; then echo "dnf"
-        elif command_exists pacman; then echo "pacman"
-        else echo "unknown"
+        if command_exists apt-get; then echo "apt"
+            elif command_exists dnf; then echo "dnf"
+            elif command_exists pacman; then echo "pacman"
+            else echo "unknown"
         fi
     }
 
     PM="$(detect_pm)"
 
     log "Detected package manager: $PM"
+
+    #######################################
+    # curl (bootstrap)
+    #######################################
+    install_curl() {
+        if command_exists curl; then
+            log "curl already installed"
+            return
+        fi
+
+        log "Installing curl"
+
+        case "$PM" in
+            apt)
+                sudo apt-get update
+                sudo apt-get install -y curl
+                ;;
+            dnf)
+                sudo dnf install -y curl
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm curl
+                ;;
+            *)
+                log "ERROR: curl is required but no supported package manager found"
+                exit 1
+                ;;
+        esac
+    }
 
     #######################################
     # pipx
@@ -63,9 +92,9 @@ if [ "$OS" = "Linux" ]; then
         pipx ensurepath || true
     }
 
-        #######################################
-        # tmux
-        #######################################
+    #######################################
+    # tmux
+    #######################################
     install_tmux() {
         if command_exists tmux; then
             log "tmux already installed: $(tmux -V)"
@@ -145,6 +174,7 @@ if [ "$OS" = "Linux" ]; then
     #######################################
     install_pipx
     install_tmux
+    install_curl
     install_ruby
 
     log "Installation complete"
