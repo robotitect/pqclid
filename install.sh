@@ -45,19 +45,19 @@ if [ "$OS" = "Linux" ]; then
 
         case "$PM" in
             apt)
-            sudo apt-get update
-            sudo apt-get install -y pipx
-            ;;
+                sudo apt-get update
+                sudo apt-get install -y pipx
+                ;;
             dnf)
-            sudo dnf install -y pipx
-            ;;
+                sudo dnf install -y pipx
+                ;;
             pacman)
-            sudo pacman -S --noconfirm python-pipx
-            ;;
+                sudo pacman -S --noconfirm python-pipx
+                ;;
             *)
-            log "Falling back to user install of pipx"
-            python3 -m pip install --user pipx
-            ;;
+                log "Falling back to user install of pipx"
+                python3 -m pip install --user pipx
+                ;;
         esac
 
         pipx ensurepath || true
