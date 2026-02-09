@@ -33,6 +33,35 @@ if [ "$OS" = "Linux" ]; then
     log "Detected package manager: $PM"
 
     #######################################
+    # git (bootstrap)
+    #######################################
+    install_git() {
+        if command -v git >/dev/null 2>&1; then
+            echo "git already installed"
+            return
+        fi
+
+        echo "Installing git..."
+
+        case "$PM" in
+            apt)
+                sudo apt-get update
+                sudo apt-get install -y git
+                ;;
+            dnf)
+                sudo dnf install -y git
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm git
+                ;;
+            *)
+                echo "ERROR: git is required but no supported package manager found"
+                exit 1
+                ;;
+        esac
+    }
+
+    #######################################
     # curl (bootstrap)
     #######################################
     install_curl() {
@@ -170,10 +199,8 @@ if [ "$OS" = "Linux" ]; then
     }
 
     install_pqclid() {
-        # git clone https://github.com/rr-/pq-cli.git
-        # cd pq-cli
-        # pipx install .
         pipx install git+https://github.com/rr-/pq-cli.git
+        pipx ensurepath
     }
 
     #######################################
@@ -181,6 +208,7 @@ if [ "$OS" = "Linux" ]; then
     #######################################
     install_pipx
     install_tmux
+    install_git
     install_curl
     install_ruby
     install_pqclid
