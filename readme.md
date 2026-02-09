@@ -85,10 +85,8 @@ You can go to `localhost:11662` to get a snapshot of your character's current si
 
 ## Install
 
-Clone the directory and run:
-
 ```sh
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/robotitect/pqclid/main/install.sh | sh
 ```
 
 This installs (if not already present):
@@ -97,7 +95,10 @@ This installs (if not already present):
 	* This is used to run the `pqcli` interface in the background.
 2. `pipx`
 	* This is used to install `pqcli` without messing with Python environments
-3. `pqcli` (via `pipx`)
+3. `git`
+4. `curl`
+5. `ruby@3.4.7`
+6. `pqcli` (via `pipx`)
 
 It will then startup `pqcli`'s interface once. You will need to create a character at this point and exit out of the program. This creates an initial save that the daemon picks up and loads from.
 
