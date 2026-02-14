@@ -283,8 +283,8 @@ EOF
     # Install and start the daemon
     TMP="$(mktemp -d)"
     cd "$TMP"
-    curl -fsSL https://raw.githubusercontent.com/robotitect/pqclid/main/pqclid.service
-    curl -fsSL https://raw.githubusercontent.com/robotitect/pqclid/main/tmux-pq-supervisor
+    curl -fsSLO https://raw.githubusercontent.com/robotitect/pqclid/main/pqclid.service
+    curl -fsSLO https://raw.githubusercontent.com/robotitect/pqclid/main/tmux-pq-supervisor
     mkdir -pv ~/.config/systemd/user/ && cp -v pqclid.service ~/.config/systemd/user/pqclid.service
     cp -v tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
