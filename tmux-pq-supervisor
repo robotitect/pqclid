@@ -3,7 +3,7 @@ set -eu
 
 SOCKET="$HOME/.tmux_pqcli_socket"
 SESSION="pqcli"
-CMD="$HOME/.local/bin/pqcli --load-save 1"
+CMD="$HOME/.local/bin/pqcli --no-colors --load-save 1"
 
 # Ensure socket directory exists
 mkdir -p "$(dirname "$SOCKET")"
