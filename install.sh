@@ -152,50 +152,100 @@ if [ "$OS" = "Linux" ]; then
     }
 
     #######################################
-    # Ruby 3.4.7 (local, app-scoped)
+    # Ruby 3.2.4
     #######################################
+    ruby_version_ok() {
+        command -v ruby >/dev/null 2>&1 || return 1
+
+        ver="$(ruby -v 2>/dev/null)"
+        ver="${ver#ruby }"
+        ver="${ver%%p*}"
+        ver="${ver%% *}"
+
+        IFS=. read -r major minor patch <<EOF
+$ver
+EOF
+
+        [ "$major" -eq 3 ] && [ "$minor" -ge 2 ]
+    }
+
     install_ruby() {
-        if [ -x "$BIN_DIR/ruby" ]; then
-            log "Ruby already installed locally"
+        #######################################
+        # 1. Use system Ruby if compatible
+        #######################################
+        if command -v ruby >/dev/null 2>&1; then
+            if ruby_version_ok; then
+                log "Using system Ruby: $(ruby -v)"
+                return
+            else
+                log "System Ruby present but incompatible: $(ruby -v)"
+            fi
+        else
+            log "No system Ruby detected"
+        fi
+
+        #######################################
+        # 2. Try installing from package manager
+        #######################################
+        log "Attempting to install Ruby from package manager"
+
+        case "$PM" in
+            apt)
+                sudo apt-get update
+                sudo apt-get install -y ruby-full
+                ;;
+            dnf)
+                sudo dnf install -y ruby
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm ruby
+                ;;
+            *)
+                log "Unknown package manager — skipping system install"
+                ;;
+        esac
+
+        if command -v ruby >/dev/null 2>&1 && ruby_version_ok; then
+            log "Using packaged Ruby: $(ruby -v)"
             return
         fi
 
-        log "Installing Ruby $RUBY_VERSION locally"
+        log "Packaged Ruby not compatible or not available"
 
-        # Build deps
-        case "$PM" in
-            apt)
-            sudo apt-get install -y \
-                build-essential libssl-dev libreadline-dev zlib1g-dev \
-                libyaml-dev libffi-dev libgdbm-dev
-            ;;
-            dnf)
-            sudo dnf install -y \
-                gcc make openssl-devel readline-devel zlib-devel \
-                libyaml-devel libffi-devel gdbm-devel
-            ;;
-            pacman)
-            sudo pacman -S --noconfirm \
-                base-devel openssl readline zlib libyaml libffi gdbm
-            ;;
+        #######################################
+        # 3. Install prebuilt Ruby 3.2.4
+        #######################################
+        RUBY_VERSION="3.2.4"
+        PREFIX="$APP_DIR/ruby/$RUBY_VERSION"
+        mkdir -p "$PREFIX"
+
+        ARCH="$(uname -m)"
+        OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
+        case "$ARCH" in
+            x86_64) ARCH_TAG="x86_64" ;;
+            aarch64|arm64) ARCH_TAG="aarch64" ;;
+            armv7l) ARCH_TAG="armv7" ;;
             *)
-            log "WARNING: unknown package manager, Ruby build may fail"
-            ;;
+                log "ERROR: unsupported architecture: $ARCH"
+                exit 1
+                ;;
         esac
 
         TMP="$(mktemp -d)"
         cd "$TMP"
 
-        log "Downloading ruby-build"
-        curl -fsSL https://github.com/rbenv/ruby-build/archive/refs/tags/v20260121.tar.gz | tar xz
-        cd ruby-build-20260121
-        PREFIX="$APP_DIR/ruby/$RUBY_VERSION"
-        ./bin/ruby-build "$RUBY_VERSION" "$PREFIX"
+        RUBY_URL="https://github.com/YOURORG/YOURREPO/releases/download/ruby-3.2.4/ruby-3.2.4-${OS}-${ARCH_TAG}.tar.gz"
 
-        ln -s "$PREFIX/bin/ruby" "$BIN_DIR/ruby"
-        ln -s "$PREFIX/bin/gem" "$BIN_DIR/gem"
+        log "Downloading prebuilt Ruby from $RUBY_URL"
+        curl -fL "$RUBY_URL" -o ruby.tar.gz
 
-        log "Ruby installed at $PREFIX"
+        tar -xzf ruby.tar.gz -C "$PREFIX"
+
+        ln -sf "$PREFIX/bin/ruby" "$BIN_DIR/ruby"
+        ln -sf "$PREFIX/bin/gem" "$BIN_DIR/gem"
+
+        log "Installed bundled Ruby 3.2.4 for $OS-$ARCH_TAG"
     }
 
     install_pqclid() {
