@@ -56,7 +56,7 @@ module PqCliParse
   end
 
   def textboxes(top_left_corners)
-    top_left_corners.map { one_textbox(it.row, it.col) }
+    top_left_corners.map { one_textbox(_1.row, _1.col) }
   end
 
   def validate_textbox_header?(textbox, header)
@@ -85,7 +85,7 @@ module PqCliParse
     else
       # Normal behaviour when no zero division error imminent
       xp_total_to_next_lvl =
-        (xp_remaining / ((1 00r - xp_percent)/100r)).round.to_i
+        (xp_remaining / ((100r - xp_percent)/100r)).round.to_i
       xp_current = xp_total_to_next_lvl - xp_remaining.round.to_i
 
       @xp_total_cached = xp_total_to_next_lvl
@@ -138,7 +138,7 @@ module PqCliParse
     # 1st map (split): Split along long lengths of spaces
     # 2nd map (strip/reject): Remove empty strings
     textbox[1..-2].map do |line|
-      line[1..-2].split('  ').map(&:strip).reject { it == '' }
+      line[1..-2].split('  ').map(&:strip).reject { _1 == '' }
     end.compact # Remove nils
   end
 
@@ -146,11 +146,11 @@ module PqCliParse
   # SomethingOnTheLeft.......................................SomethingOnTheRight
   # This parses these 2 value entries as key-value pairs
   def parse_generic(textbox)
-    filter_textbox(textbox).select { it.size == 2 }.to_h
+    filter_textbox(textbox).select { _1.size == 2 }.to_h
   end
 
   def parse_experience_textbox(textbox)
-    tb_xp = filter_textbox(textbox).select { it.size == 1 }.flatten
+    tb_xp = filter_textbox(textbox).select { _1.size == 1 }.flatten
     xp_remaining = tb_xp.first[REGEX_MATCHER[:xp_remaining]].to_i
 
     xp_percent, xp_time_left, xp_time_unit =
@@ -172,9 +172,9 @@ module PqCliParse
   end
 
   def filter_todo_list(textbox)
-    filter_textbox(textbox).select { it.size == 1 }
+    filter_textbox(textbox).select { _1.size == 1 }
                            .flatten
-                           .reject { it.include?('───────') }
+                           .reject { _1.include?('───────') }
   end
 
   # For to-do list style boxes (Plot Development, Quests)
@@ -225,11 +225,11 @@ module PqCliParse
   def parse_spell_book(textbox)
     return unless validate_textbox_header?(textbox, HEADER[:spells])
 
-    parse_generic(textbox).transform_values { RomanNumerals.to_decimal(it) }
+    parse_generic(textbox).transform_values { RomanNumerals.to_decimal(_1) }
   end
 
   def filter_inventory(textbox)
-    filter_textbox(textbox).select { it.size == 1 }.flatten
+    filter_textbox(textbox).select { _1.size == 1 }.flatten
   end
 
   def parse_inventory(textbox)
