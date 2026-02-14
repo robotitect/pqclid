@@ -285,6 +285,7 @@ EOF
     cd "$TMP"
     curl -fsSLO https://raw.githubusercontent.com/robotitect/pqclid/main/pqclid.service
     curl -fsSLO https://raw.githubusercontent.com/robotitect/pqclid/main/tmux-pq-supervisor
+    chmod +x tmux-pq-supervisor
     mkdir -pv ~/.config/systemd/user/ && cp -v pqclid.service ~/.config/systemd/user/pqclid.service
     cp -v tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
