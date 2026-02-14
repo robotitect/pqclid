@@ -271,6 +271,7 @@ EOF
     printf "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
     read _ < /dev/tty
     printf "\n"
+    exec </dev/tty >/dev/tty 2>/dev/tty
     $HOME/.local/bin/pqcli --no-colors
 
     # Install and start the daemon
