@@ -268,17 +268,8 @@ EOF
     log "export PATH=\"$BIN_DIR:\$PATH\""
 
     # The user needs to create a character and start a save
-    while [ ! -f ~/.config/pqcli/save.dat ]; do
-        read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
-        pqcli --no-colors
-
-        if [ -f ~/.config/pqcli/save.dat ]; then
-            log "pqcli save file created"
-        else
-            log "pqcli save file not created, try again."
-        fi
-    done
-    log "pqcli save file found"
+    read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
+    pqcli --no-colors
 
     # Install and start the daemon
     TMP="$(mktemp -d)"
