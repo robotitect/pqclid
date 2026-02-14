@@ -268,9 +268,9 @@ EOF
     log "export PATH=\"$BIN_DIR:\$PATH\""
 
     # The user needs to create a character and start a save
-    echo "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
+    printf "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
     read _
-    pqcli --no-colors
+    $BIN_DIR/pqcli --no-colors
 
     # Install and start the daemon
     TMP="$(mktemp -d)"
@@ -285,6 +285,12 @@ EOF
 
     systemctl --user daemon-reload
     systemctl --user enable --now pqclid.service
+
+    cd $APP_DIR
+    git clone https://github.com/robotitect/pqclid
+    cd pqclid
+    bundle install --deployment
+    bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
 fi
