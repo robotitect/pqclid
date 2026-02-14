@@ -97,7 +97,8 @@ This installs (if not already present):
 	* This is used to install `pqcli` without messing with Python environments
 3. `git`
 4. `curl`
-5. `ruby@3.4.7`
+5. `ruby`
+	* 3.2.4 compatible version
 6. `pqcli` (via `pipx`)
 
 It will then startup `pqcli`'s interface once. You will need to create a character at this point and exit out of the program. This creates an initial save that the daemon picks up and loads from.
