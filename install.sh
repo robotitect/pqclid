@@ -268,7 +268,8 @@ EOF
     log "export PATH=\"$BIN_DIR:\$PATH\""
 
     # The user needs to create a character and start a save
-    read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
+    echo "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
+    read _
     pqcli --no-colors
 
     # Install and start the daemon
