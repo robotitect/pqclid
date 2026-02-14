@@ -37,11 +37,11 @@ if [ "$OS" = "Linux" ]; then
     #######################################
     install_git() {
         if command -v git >/dev/null 2>&1; then
-            echo "git already installed"
+            log "git already installed"
             return
         fi
 
-        echo "Installing git..."
+        log "Installing git..."
 
         case "$PM" in
             apt)
@@ -55,7 +55,7 @@ if [ "$OS" = "Linux" ]; then
                 sudo pacman -S --noconfirm git
                 ;;
             *)
-                echo "ERROR: git is required but no supported package manager found"
+                log "ERROR: git is required but no supported package manager found"
                 exit 1
                 ;;
         esac
@@ -270,17 +270,21 @@ EOF
     # The user needs to create a character and start a save
     while [ ! -f ~/.config/pqcli/save.dat ]; do
         read -p "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
-        pqcli
+        pqcli --no-colors
 
         if [ -f ~/.config/pqcli/save.dat ]; then
-            echo "pqcli save file created"
+            log "pqcli save file created"
         else
-            echo "pqcli save file not created, try again."
+            log "pqcli save file not created, try again."
         fi
     done
-    echo "pqcli save file found"
+    log "pqcli save file found"
 
     # Install and start the daemon
+    TMP="$(mktemp -d)"
+    cd "$TMP"
+    curl -fsSL https://raw.githubusercontent.com/robotitect/pqclid/main/pqclid.service
+    curl -fsSL https://raw.githubusercontent.com/robotitect/pqclid/main/tmux-pq-supervisor
     mkdir -pv ~/.config/systemd/user/ && cp -v pqclid.service ~/.config/systemd/user/pqclid.service
     cp -v tmux-pq-supervisor ~/.local/bin/tmux-pq-supervisor
 
@@ -289,5 +293,5 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now pqclid.service
 else
-    echo "Not a Linux machine, quitting..."
+    log "Not a Linux machine, quitting..."
 fi
