@@ -291,6 +291,8 @@ EOF
     cd $APP_DIR
     git clone https://github.com/robotitect/pqclid
     cd pqclid
+
+    gem install bundler --no-document
     bundle config set --local path 'vendor/bundle'
     bundle install --deployment --without development test
     bundle exec ruby app.rb
