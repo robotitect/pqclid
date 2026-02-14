@@ -269,7 +269,8 @@ EOF
 
     # The user needs to create a character and start a save
     printf "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
-    read _
+    read _ < /dev/tty
+    printf "\n"
     $BIN_DIR/pqcli --no-colors
 
     # Install and start the daemon
@@ -289,7 +290,8 @@ EOF
     cd $APP_DIR
     git clone https://github.com/robotitect/pqclid
     cd pqclid
-    bundle install --deployment
+    bundle config set --local path 'vendor/bundle'
+    bundle install --deployment --without development test
     bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
