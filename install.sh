@@ -248,6 +248,30 @@ EOF
         log "Installed bundled Ruby 3.2.4 for $OS-$ARCH_TAG"
     }
 
+    install_ruby_build_deps() {
+        log "Installing build dependencies for Ruby gems"
+
+        case "$PM" in
+            apt)
+                sudo apt-get install -y \
+                    build-essential ruby-dev \
+                    libssl-dev zlib1g-dev
+                ;;
+            dnf)
+                sudo dnf install -y \
+                    gcc make ruby-devel \
+                    openssl-devel zlib-devel
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm \
+                    base-devel openssl zlib
+                ;;
+            *)
+                log "WARNING: unknown package manager, gem compilation may fail"
+                ;;
+        esac
+    }
+
     install_pqclid() {
         pipx install git+https://github.com/rr-/pq-cli.git
         pipx ensurepath
@@ -261,6 +285,7 @@ EOF
     install_git
     install_curl
     install_ruby
+    install_ruby_build_deps
     install_pqclid
 
     log "Installation complete"
