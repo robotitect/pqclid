@@ -288,7 +288,6 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now pqclid.service
 
-    gem install bundler --no-document
     # Add Ruby gems bin directory to PATH (version agnostic)
     gem install bundler --user-install && GEM_BIN=$(ruby -e 'puts Gem.user_dir')/bin
     export PATH="$GEM_BIN:$PATH"
@@ -300,7 +299,8 @@ EOF
     cd pqclid
 
     bundle config set --local path 'vendor/bundle'
-    bundle install --deployment --without development test
+    bundle config set deployment true
+    bundle install --without development test
     bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
