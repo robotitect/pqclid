@@ -300,7 +300,8 @@ EOF
 
     bundle config set --local path 'vendor/bundle'
     bundle config set deployment true
-    bundle install --without development test
+    bundle config set without 'development test'
+    bundle install
     bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
