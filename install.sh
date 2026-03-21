@@ -288,28 +288,11 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now pqclid.service
 
-    # Install bundler
-    gem install bundler --user-install
-
-    # Get gem bin directory
-    GEM_BIN_DIR="$(ruby -e 'puts Gem.user_dir')/bin"
-
-    # Add to appropriate config file
-    if [ -n "$BASH_VERSION" ]; then
-        # For bash
-        echo "export PATH=\"$GEM_BIN_DIR:\$PATH\"" >> ~/.bashrc
-        . ~/.bashrc
-    elif [ -n "$ZSH_VERSION" ]; then
-        # For zsh
-        echo "export PATH=\"$GEM_BIN_DIR:\$PATH\"" >> ~/.zshrc
-        . ~/.zshrc
-    else
-        # For POSIX shells (sh, dash)
-        echo "export PATH=\"$GEM_BIN_DIR:\$PATH\"" >> ~/.profile
-        . ~/.profile
-    fi
-
-    echo "Bundler installed:"
+    gem install bundler --no-document
+    # Add Ruby gems bin directory to PATH (version agnostic)
+    gem install bundler --user-install && GEM_BIN=$(ruby -e 'puts Gem.user_dir')/bin
+    export PATH="$GEM_BIN:$PATH"
+    echo "export PATH=\"$GEM_BIN:\$PATH\"" >> ~/.profile
     bundle --version
 
     cd $APP_DIR
