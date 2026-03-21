@@ -289,19 +289,18 @@ EOF
     systemctl --user enable --now pqclid.service
 
     # Add Ruby gems bin directory to PATH (version agnostic)
-    gem install bundler --user-install && GEM_BIN=$(ruby -e 'puts Gem.user_dir')/bin
-    export PATH="$GEM_BIN:$PATH"
-    echo "export PATH=\"$GEM_BIN:\$PATH\"" >> ~/.profile
-    bundle --version
+    # gem install bundler --user-install && GEM_BIN=$(ruby -e 'puts Gem.user_dir')/bin
+    # export PATH="$GEM_BIN:$PATH"
+    # echo "export PATH=\"$GEM_BIN:\$PATH\"" >> ~/.profile
+    # bundle --version
+    gem install bundler -v 2.6.9 --user-install --no-document --bindir "$BIN_DIR"
 
     cd $APP_DIR
     git clone https://github.com/robotitect/pqclid
     cd pqclid
 
     bundle config set --local path 'vendor/bundle'
-    bundle config set deployment true
-    bundle config set without 'development test'
-    bundle install
+    bundle install --deployment --without development test
     bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
