@@ -290,9 +290,10 @@ EOF
 
     gem install bundler --no-document
     # Add Ruby gems bin directory to PATH (version agnostic)
-    echo 'export PATH="$HOME/.gem/ruby/$(ruby -e "puts RUBY_VERSION[/\d+\.\d+/]")/bin:$PATH"' >> ~/.profile
+    gem install bundler --user-install && GEM_BIN=$(ruby -e 'puts Gem.user_dir')/bin
+    echo "export PATH=\"$GEM_BIN:\$PATH\"" >> ~/.profile
     . ~/.profile
-
+    bundle --version
 
     cd $APP_DIR
     git clone https://github.com/robotitect/pqclid
