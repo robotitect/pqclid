@@ -264,10 +264,10 @@ EOF
     install_pqclid
 
     log "Installation complete"
-    log "Add this to your shell config if needed:"
-    log "export PATH=\"$BIN_DIR:\$PATH\""
-    export PATH="$BIN_DIR:$PATH"
-    echo "export PATH=\"$BIN_DIR:\$PATH\"" >> ~/.profile
+    # log "Add this to your shell config if needed:"
+    # log "export PATH=\"$BIN_DIR:\$PATH\""
+    # export PATH="$BIN_DIR:$PATH"
+    # echo "export PATH=\"$BIN_DIR:\$PATH\"" >> ~/.profile
 
     # The user needs to create a character and start a save
     printf "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
@@ -301,9 +301,9 @@ EOF
     git clone https://github.com/robotitect/pqclid
     cd pqclid
 
-    bundle config set --local path 'vendor/bundle'
-    bundle install --deployment --without development test
-    bundle exec ruby app.rb
+    $BIN_DIR/bundle config set --local path 'vendor/bundle'
+    $BIN_DIR/bundle install --deployment --without development test
+    $BIN_DIR/bundle exec ruby app.rb
 else
     log "Not a Linux machine, quitting..."
 fi
