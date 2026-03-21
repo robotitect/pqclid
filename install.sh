@@ -266,6 +266,8 @@ EOF
     log "Installation complete"
     log "Add this to your shell config if needed:"
     log "export PATH=\"$BIN_DIR:\$PATH\""
+    export PATH="$BIN_DIR:$PATH"
+    echo "export PATH=\"$BIN_DIR:\$PATH\"" >> ~/.profile
 
     # The user needs to create a character and start a save
     printf "Create a character: press Enter to open pqcli and create a character; Ctrl+C to quit when done..."
