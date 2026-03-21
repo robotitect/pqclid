@@ -288,11 +288,15 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now pqclid.service
 
+    gem install bundler --no-document
+    # Add Ruby gems bin directory to PATH (version agnostic)
+    echo 'export PATH="$PATH:$HOME/.gem/ruby/$(ruby -e "puts RUBY_VERSION[/\d+\.\d+/]")/bin"' >> ~/.bashrc
+    source ~/.bashrc
+
     cd $APP_DIR
     git clone https://github.com/robotitect/pqclid
     cd pqclid
 
-    gem install bundler --no-document
     bundle config set --local path 'vendor/bundle'
     bundle install --deployment --without development test
     bundle exec ruby app.rb
