@@ -112,37 +112,25 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 
 
 ## TODO
-- [ ] Prompt the user about creating a character in install script (3s timeout)
-- [ ] Ship/install a local version of (needs to support different CPU architectures)
-	* `pipx` OR `pqcli`
-		* `git` may also be needed
-	* `tmux`
-	* `ruby` (3.4.7), gems:
-		* `sinatra`
-		* `puma`
-		* `rackup`
-		* `roman-numerals`
 - [ ] Create a deploy script / daemon for the web interface
-	* calling these commands to install the gems
-		* `bundle config set --local path 'vendor/bundle'`
-		* `bundle install --deployment --without development test`
-	* and this one to run the server
-		* `bundle exec ruby app.rb`
+	* This command to run the server
+		* `$BINDIR/bundle exec ruby $APP_DIR/app.rb`
+
 
 ### Bugs
-- [x] Divide by zero error in PqCliParse#calc_xp
+- None
 
 ### Tests
 
-- [ ] Different package managers
-	- [ ] Ubuntu (`apt`)
-	- [ ] Fedora (`dnf`)
-	- [ ] Manjaro (`pacman`)
 - [ ] Different architectures
-	- [ ] `x86_64`
-	- [ ] `aarch64`
 	- [ ] `armv7` (RPis)
 	- [ ] `armv6` (RPi 1 / Zero)
+	- [x] `x86_64`
+	- [x] `aarch64`
+- [x] Different package managers
+	- [x] Ubuntu (`apt`)
+	- [x] Fedora (`dnf`)
+	- [x] Manjaro (`pacman`)
 
 ### Wishlist
 - [ ] Create command for attaching to the instance
@@ -154,3 +142,16 @@ After it sees you've quit `pqcli`, it installs the daemon (`systemd` service), w
 - [x] Use `pipx` to install pqcli (from github repo)
 - [x] Web interface
 - [x] Add text explaining how to use attach/detach from the session
+- [x] Prompt the user about creating a character in install script (3s timeout)
+- [x] Ship/install a local version of (needs to support different CPU architectures)
+	* `pipx` OR `pqcli`
+	* `git`
+	* `tmux`
+	* `ruby` (3.4.7), gems:
+		* `sinatra`
+		* `puma`
+		* `rackup`
+		* `roman-numerals`
+
+### Bugs Fixed
+- [x] Divide by zero error in PqCliParse#calc_xp
