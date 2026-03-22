@@ -198,7 +198,7 @@ EOF
                 sudo dnf install -y ruby
                 ;;
             pacman)
-                sudo pacman -S --noconfirm ruby
+                sudo pacman -S --noconfirm ruby ruby-stdlib
                 ;;
             *)
                 log "Unknown package manager — skipping system install"
