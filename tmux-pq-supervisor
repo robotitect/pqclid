@@ -3,14 +3,29 @@ set -eu
 
 SOCKET="$HOME/.tmux_pqcli_socket"
 SESSION="pqcli"
-CMD="$HOME/.local/bin/pqcli --no-colors --load-save 1"
+CMD="$HOME/.local/bin/pqcli --no-colors --load-save 1; $BINDIR/bundle exec ruby $APP_DIR/app.rb"
 
 # Ensure socket directory exists
 mkdir -p "$(dirname "$SOCKET")"
+
+check_sinatra() {
+  if curl -fsS http://127.0.0.1:11662/ >/dev/null; then
+    echo "pqclid Sinatra server is running"
+    return 0
+  else
+    echo "pqclid Sinatra server is NOT running"
+    return 1
+  fi
+}
 
 while true; do
   if ! tmux -S "$SOCKET" has-session -t "$SESSION" 2>/dev/null; then
     tmux -S "$SOCKET" new-session -d -s "$SESSION" "$CMD"
   fi
+
+  if check_sinatra > 0; then
+    $HOME/.local/pqclid/bin/bundle exec ruby $APP_DIR/app.rb
+  fi
+
   sleep 2
 done
