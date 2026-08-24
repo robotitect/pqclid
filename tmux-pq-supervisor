@@ -23,7 +23,7 @@ while true; do
     tmux -S "$SOCKET" new-session -d -s "$SESSION" "$CMD"
   fi
 
-  if check_sinatra > 0; then
+  if [check_sinatra == 1]; then
     $HOME/.local/pqclid/bin/bundle exec ruby $APP_DIR/app.rb
   fi
 
