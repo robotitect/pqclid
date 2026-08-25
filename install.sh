@@ -299,7 +299,7 @@ EOF
     read _ < /dev/tty
     printf "\n"
     exec </dev/tty >/dev/tty 2>/dev/tty
-    $HOME/.local/bin/pqcli --no-colors
+    $HOME/.local/bin/pqcli --no-colors &>/dev/null
 
     # Install and start the daemon
     TMP="$(mktemp -d)"
