@@ -273,7 +273,7 @@ EOF
     }
 
     install_pqclid() {
-        pipx install git+https://github.com/rr-/pq-cli.git
+        pipx install git+https://github.com/rr-/pq-cli.git@742692417076b21875a13d0ed2438e80472cb9b7
         pipx ensurepath
     }
 
